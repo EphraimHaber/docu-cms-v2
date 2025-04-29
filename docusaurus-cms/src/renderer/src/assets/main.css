@@ -1,5 +1,12 @@
 @import './base.css';
 
+:root {
+  --app-bg-color: #f8f9fa;
+  --sidebar-bg-color: #ffffff;
+  --header-bg-color: #ffffff;
+  --border-color: #e9ecef;
+}
+
 body {
   display: flex;
   align-items: center;
@@ -8,6 +15,9 @@ body {
   background-image: url('./wavy-lines.svg');
   background-size: cover;
   user-select: none;
+  margin: 0;
+  padding: 0;
+  background-color: var(--app-bg-color);
 }
 
 code {
@@ -149,6 +159,79 @@ code {
   &:last-child {
     border: none;
   }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+/* Improve editor appearance */
+.monaco-editor {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+/* Make the preview look better */
+.preview-container {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  overflow-y: auto;
+  height: 100%;
+}
+
+.preview-container h1 {
+  font-size: 1.8rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.preview-container h2 {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.preview-container h3 {
+  font-size: 1.25rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-container p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* Make the file list more readable */
+.file-item {
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.file-item:hover {
+  background-color: #f1f3f5;
+}
+
+/* Improved alerts */
+.alert-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
 }
 
 @media (max-width: 720px) {

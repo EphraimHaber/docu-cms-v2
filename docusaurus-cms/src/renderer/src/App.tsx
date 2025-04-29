@@ -1,34 +1,54 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+
+// Import components
+import SiteSelector from './components/SiteSelector'
+import Dashboard from './components/Dashboard'
+import DocsEditor from './components/DocsEditor'
+import BlogEditor from './components/BlogEditor'
+import ConfigEditor from './components/ConfigEditor'
+import './assets/main.css'
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const [sitePath, setSitePath] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Check if site path is already selected
+  useEffect(() => {
+    async function checkSitePath() {
+      try {
+        const path = await window.api.getCurrentSitePath()
+        setSitePath(path)
+      } catch (error) {
+        console.error('Failed to get current site path:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    checkSitePath()
+  }, [])
+
+  // If still loading, show loading indicator
+  if (loading) {
+    return <div className="loading">Loading...</div>
+  }
+
+  // If no site is selected, show site selector
+  if (!sitePath) {
+    return <SiteSelector onSiteSelected={setSitePath} />
+  }
 
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard sitePath={sitePath} />} />
+        <Route path="/docs/:filePath" element={<DocsEditor sitePath={sitePath} />} />
+        <Route path="/blog/:filePath" element={<BlogEditor sitePath={sitePath} />} />
+        <Route path="/config/:filePath" element={<ConfigEditor sitePath={sitePath} />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
