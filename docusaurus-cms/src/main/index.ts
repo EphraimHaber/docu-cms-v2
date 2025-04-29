@@ -1,13 +1,23 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import {
+  getProjectStructure,
+  readDocusaurusFile,
+  saveDocusaurusFile,
+  createNewFile,
+  deleteFile
+} from './fileUtils'
+
+// Store the Docusaurus site path
+let docusaurusSitePath: string | null = null
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 800,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -33,6 +43,80 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  // Register IPC handlers
+  setupIpcHandlers(mainWindow)
+}
+
+// Setup all IPC handlers
+function setupIpcHandlers(mainWindow: BrowserWindow) {
+  // Select Docusaurus site folder
+  ipcMain.handle('select-docusaurus-site', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory'],
+      title: 'Select your Docusaurus site folder'
+    })
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      docusaurusSitePath = result.filePaths[0]
+      return docusaurusSitePath
+    }
+    return null
+  })
+
+  // Get current Docusaurus site path
+  ipcMain.handle('get-current-site-path', () => {
+    return docusaurusSitePath
+  })
+
+  // Get project structure
+  ipcMain.handle('get-project-structure', async () => {
+    if (!docusaurusSitePath) return null
+    return getProjectStructure(docusaurusSitePath)
+  })
+
+  // Read file
+  ipcMain.handle('read-file', async (_, filePath) => {
+    try {
+      return await readDocusaurusFile(filePath)
+    } catch (error) {
+      console.error('Error reading file:', error)
+      return null
+    }
+  })
+
+  // Save file
+  ipcMain.handle('save-file', async (_, filePath, content, frontmatter) => {
+    try {
+      await saveDocusaurusFile(filePath, content, frontmatter)
+      return true
+    } catch (error) {
+      console.error('Error saving file:', error)
+      return false
+    }
+  })
+
+  // Create new file
+  ipcMain.handle('create-file', async (_, filePath, title, content, frontmatter) => {
+    try {
+      await createNewFile(filePath, title, content, frontmatter)
+      return true
+    } catch (error) {
+      console.error('Error creating file:', error)
+      return false
+    }
+  })
+
+  // Delete file
+  ipcMain.handle('delete-file', async (_, filePath) => {
+    try {
+      await deleteFile(filePath)
+      return true
+    } catch (error) {
+      console.error('Error deleting file:', error)
+      return false
+    }
+  })
 }
 
 // This method will be called when Electron has finished
@@ -48,9 +132,6 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
 
@@ -69,6 +150,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
