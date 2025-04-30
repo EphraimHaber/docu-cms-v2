@@ -12,7 +12,9 @@ import {
   ActionIcon,
   TextInput,
   Accordion,
-  Loader
+  Loader,
+  Box,
+  Flex
 } from '@mantine/core'
 import pathUtils from '../utils/path'
 
@@ -162,22 +164,22 @@ function Dashboard({ sitePath }: DashboardProps): React.JSX.Element {
           ) : structure ? (
             <Accordion defaultValue="documentation">
               <Accordion.Item value="documentation">
-                <Accordion.Control>
-                  <Group>
-                    <Text>Documentation</Text>
+                <Box>
+                  <Flex justify="space-between" align="center">
+                    <Accordion.Control style={{ flex: 1 }}>
+                      <Text>Documentation</Text>
+                    </Accordion.Control>
                     <ActionIcon
                       size="sm"
                       variant="light"
                       color="blue"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        createNewDocument('docs')
-                      }}
+                      mx="md"
+                      onClick={() => createNewDocument('docs')}
                     >
                       +
                     </ActionIcon>
-                  </Group>
-                </Accordion.Control>
+                  </Flex>
+                </Box>
                 <Accordion.Panel>
                   <Stack gap="xs">
                     {getFilteredFiles(structure.docs).map((file) => (
@@ -198,22 +200,22 @@ function Dashboard({ sitePath }: DashboardProps): React.JSX.Element {
               </Accordion.Item>
 
               <Accordion.Item value="blog">
-                <Accordion.Control>
-                  <Group>
-                    <Text>Blog Posts</Text>
+                <Box>
+                  <Flex justify="space-between" align="center">
+                    <Accordion.Control style={{ flex: 1 }}>
+                      <Text>Blog Posts</Text>
+                    </Accordion.Control>
                     <ActionIcon
                       size="sm"
                       variant="light"
                       color="blue"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        createNewDocument('blog')
-                      }}
+                      mx="md"
+                      onClick={() => createNewDocument('blog')}
                     >
                       +
                     </ActionIcon>
-                  </Group>
-                </Accordion.Control>
+                  </Flex>
+                </Box>
                 <Accordion.Panel>
                   <Stack gap="xs">
                     {getFilteredFiles(structure.blog).map((file) => (

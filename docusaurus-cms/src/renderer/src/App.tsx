@@ -9,6 +9,11 @@ import BlogEditor from './components/BlogEditor'
 import ConfigEditor from './components/ConfigEditor'
 import './assets/main.css'
 
+import * as monaco from 'monaco-editor'
+import { loader } from '@monaco-editor/react'
+
+loader.config({ monaco })
+
 function App(): React.JSX.Element {
   const [sitePath, setSitePath] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)

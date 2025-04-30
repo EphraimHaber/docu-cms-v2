@@ -1,4 +1,6 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, protocol } from 'electron'
+import path from 'path'
+import fs from 'fs'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -125,6 +127,12 @@ function setupIpcHandlers(mainWindow: BrowserWindow) {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+
+  protocol.registerFileProtocol('monaco', (request, callback) => {
+    const filePath = request.url.replace('monaco://', '')
+    const normalizedPath = path.normalize(`${__dirname}/node_modules/monaco-editor/${filePath}`)
+    callback({ path: normalizedPath })
+  })
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

@@ -13,6 +13,12 @@ import {
   TagsInput
 } from '@mantine/core'
 import { Editor } from '@monaco-editor/react'
+import { loader } from '@monaco-editor/react'
+loader.config({
+  paths: {
+    vs: 'monaco://min/vs'
+  }
+})
 import pathUtils from '../utils/path'
 import { renderMarkdownSafe } from '../utils/markdown'
 
