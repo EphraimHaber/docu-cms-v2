@@ -1,4 +1,4 @@
-import { Extension, Node, RawCommands, mergeAttributes } from '@tiptap/core'
+import { Node, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import { AdmonitionComponent } from './AdmonitionComponent'
 
@@ -60,11 +60,20 @@ export const AdmonitionExtension = Node.create({
       ...this.parent?.(),
       setAdmonition:
         (attributes: AdmonitionAttributes) =>
-        ({ commands }: { commands: RawCommands }) => {
-          return commands.setNode(this.name, attributes)
+        ({ chain }) => {
+          return chain()
+            .insertContent({
+              type: this.name,
+              attrs: attributes,
+              content: [
+                {
+                  type: 'paragraph'
+                }
+              ]
+            })
+            .focus()
+            .run()
         }
     }
   }
 })
-
-export default AdmonitionExtension

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { NodeViewProps, NodeViewWrapper } from '@tiptap/react'
+import React, { useState, useEffect } from 'react'
+import { NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/react'
 import './AdmonitionComponent.css'
 
 export const AdmonitionComponent: React.FC<NodeViewProps> = ({
@@ -8,10 +8,16 @@ export const AdmonitionComponent: React.FC<NodeViewProps> = ({
   extension,
   editor,
   getPos,
+  deleteNode,
   ...props
 }) => {
   const type = node.attrs.type || 'note'
   const [title, setTitle] = useState(node.attrs.title || '')
+
+  // Sync title with node attributes when they change externally
+  useEffect(() => {
+    setTitle(node.attrs.title || '')
+  }, [node.attrs.title])
 
   const getAdmonitionIcon = () => {
     switch (type) {
@@ -61,8 +67,26 @@ export const AdmonitionComponent: React.FC<NodeViewProps> = ({
     updateAttributes({ type: e.target.value })
   }
 
+  // Function to handle keyboard events
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Handle backspace when the admonition content is empty
+    if (event.key === 'Backspace' && typeof getPos === 'function') {
+      const pos = getPos()
+      const { state } = editor
+
+      // Check if the admonition is empty (contains only an empty paragraph)
+      const nodeSize = state.doc.nodeAt(pos)?.nodeSize || 0
+      const isEmpty = nodeSize <= 4
+
+      if (isEmpty && deleteNode) {
+        event.preventDefault()
+        deleteNode()
+      }
+    }
+  }
+
   return (
-    <NodeViewWrapper className="admonition-wrapper">
+    <NodeViewWrapper className="admonition-wrapper" onKeyDown={handleKeyDown} data-type={type}>
       <div
         className={`admonition admonition-${type}`}
         style={{ borderColor: getAdmonitionColor() }}
@@ -70,6 +94,7 @@ export const AdmonitionComponent: React.FC<NodeViewProps> = ({
         <div
           className="admonition-heading"
           style={{ backgroundColor: `${getAdmonitionColor()}22` }}
+          contentEditable={false}
         >
           <div className="admonition-icon">{getAdmonitionIcon()}</div>
 
@@ -99,7 +124,9 @@ export const AdmonitionComponent: React.FC<NodeViewProps> = ({
           )}
         </div>
 
-        <div className="admonition-content">{props.children}</div>
+        <div className="admonition-content">
+          <NodeViewContent />
+        </div>
       </div>
     </NodeViewWrapper>
   )
