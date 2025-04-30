@@ -1,4 +1,4 @@
-import { Node, RawCommands, mergeAttributes } from '@tiptap/core'
+import { Extension, Node, RawCommands, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import { AdmonitionComponent } from './AdmonitionComponent'
 
@@ -57,10 +57,10 @@ export const AdmonitionExtension = Node.create({
 
   addCommands() {
     return {
+      ...this.parent?.(),
       setAdmonition:
         (attributes: AdmonitionAttributes) =>
         ({ commands }: { commands: RawCommands }) => {
-          console.log({ commands, attributes })
           return commands.setNode(this.name, attributes)
         }
     }

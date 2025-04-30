@@ -98,6 +98,7 @@ const SlashCommands = ({ editor }: SlashCommandsProps) => {
       description: 'Add a note admonition box',
       icon: <span className="icon">📝</span>,
       action: () => {
+        console.log(editor.commands)
         editor.chain().focus().setAdmonition({ type: 'note', title: 'Note' }).run()
         setIsOpen(false)
       }

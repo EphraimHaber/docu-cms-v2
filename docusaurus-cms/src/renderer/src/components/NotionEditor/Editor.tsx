@@ -50,9 +50,6 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
       Placeholder.configure({
         placeholder: 'Type "/" for commands...'
       }),
-      CodeBlockLowlight.configure({
-        lowlight
-      }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
