@@ -6,21 +6,15 @@ import {
   Group,
   TextInput,
   Box,
-  Tabs,
   LoadingOverlay,
   Grid,
   Alert,
-  TagsInput
+  TagsInput,
+  Paper
 } from '@mantine/core'
-import { Editor } from '@monaco-editor/react'
-import { loader } from '@monaco-editor/react'
-loader.config({
-  paths: {
-    vs: 'monaco://min/vs'
-  }
-})
 import pathUtils from '../utils/path'
-import { renderMarkdownSafe } from '../utils/markdown'
+import NotionEditor from './NotionEditor/Editor'
+import FrontMatterCard from './NotionEditor/FrontMatterCard'
 
 interface DocusaurusContent {
   content: string
@@ -44,11 +38,7 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
 
   const [content, setContent] = useState<DocusaurusContent | null>(null)
   const [editorContent, setEditorContent] = useState('')
-  const [title, setTitle] = useState('')
-  const [slug, setSlug] = useState('')
-  const [tags, setTags] = useState<string[]>([])
-  const [authors, setAuthors] = useState<string[]>([])
-
+  const [frontMatter, setFrontMatter] = useState<Record<string, any>>({})
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -65,20 +55,7 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
         if (post) {
           setContent(post)
           setEditorContent(post.content)
-          setTitle(post.data.title || '')
-          setSlug(post.data.slug || '')
-
-          // Handle tags
-          const postTags = post.data.tags || []
-          setTags(Array.isArray(postTags) ? postTags : [])
-
-          // Handle authors
-          const postAuthors = post.data.authors || []
-          if (Array.isArray(postAuthors)) {
-            setAuthors(postAuthors)
-          } else if (typeof postAuthors === 'object') {
-            setAuthors(Object.keys(postAuthors))
-          }
+          setFrontMatter(post.data || {})
         }
       } catch (error) {
         console.error('Failed to load blog post:', error)
@@ -90,6 +67,11 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
     loadContent()
   }, [decodedFilePath])
 
+  // Handle frontmatter changes
+  const handleFrontMatterChange = (newFrontMatter: Record<string, any>) => {
+    setFrontMatter(newFrontMatter)
+  }
+
   // Save blog post
   const savePost = async () => {
     if (!decodedFilePath || !content) return
@@ -99,26 +81,14 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
     setSaveSuccess(false)
 
     try {
-      // Prepare frontmatter
-      const frontmatter = {
-        ...content.data,
-        title,
-        tags,
-        authors
-      }
-
-      if (slug) {
-        frontmatter.slug = slug
-      }
-
-      const success = await window.api.saveFile(decodedFilePath, editorContent, frontmatter)
+      const success = await window.api.saveFile(decodedFilePath, editorContent, frontMatter)
 
       if (success) {
         setSaveSuccess(true)
         // Update local content state
         setContent({
           content: editorContent,
-          data: frontmatter
+          data: frontMatter
         })
 
         // Clear success message after 3 seconds
@@ -186,73 +156,75 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
               </Alert>
             )}
 
-            <Grid mb="md">
-              <Grid.Col span={{ base: 12, sm: 6 }}>
-                <TextInput
-                  label="Title"
-                  value={title}
-                  onChange={(event) => setTitle(event.currentTarget.value)}
-                />
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12, sm: 6 }}>
-                <TextInput
-                  label="Slug (URL path)"
-                  value={slug}
-                  onChange={(event) => setSlug(event.currentTarget.value)}
-                  placeholder="my-blog-post"
-                />
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12, sm: 6 }}>
-                <TagsInput
-                  label="Tags"
-                  value={tags}
-                  onChange={setTags}
-                  placeholder="Add tag and press Enter"
-                />
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12, sm: 6 }}>
-                <TagsInput
-                  label="Authors"
-                  value={authors}
-                  onChange={setAuthors}
-                  placeholder="Add author and press Enter"
-                />
-              </Grid.Col>
-            </Grid>
-
-            <Tabs defaultValue="editor">
-              <Tabs.List>
-                <Tabs.Tab value="editor">Markdown Editor</Tabs.Tab>
-                <Tabs.Tab value="preview">Preview</Tabs.Tab>
-              </Tabs.List>
-
-              <Tabs.Panel value="editor" pt="xs">
-                <Box h="70vh">
-                  <Editor
-                    height="100%"
-                    language="markdown"
-                    value={editorContent}
-                    onChange={(value) => setEditorContent(value || '')}
-                    options={{
-                      wordWrap: 'on',
-                      minimap: { enabled: false }
-                    }}
+            <Paper shadow="xs" p="md" mb="md" withBorder>
+              <Grid>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                  <TextInput
+                    label="Title"
+                    value={frontMatter.title || ''}
+                    onChange={(event) =>
+                      handleFrontMatterChange({
+                        ...frontMatter,
+                        title: event.currentTarget.value
+                      })
+                    }
                   />
-                </Box>
-              </Tabs.Panel>
+                </Grid.Col>
 
-              <Tabs.Panel value="preview" pt="xs">
-                <Box h="70vh" style={{ overflow: 'auto' }} className="preview-container">
-                  <div
-                    className="markdown-content"
-                    dangerouslySetInnerHTML={{ __html: renderMarkdownSafe(editorContent) }}
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                  <TextInput
+                    label="Slug (URL path)"
+                    value={frontMatter.slug || ''}
+                    onChange={(event) =>
+                      handleFrontMatterChange({
+                        ...frontMatter,
+                        slug: event.currentTarget.value
+                      })
+                    }
+                    placeholder="my-blog-post"
                   />
-                </Box>
-              </Tabs.Panel>
-            </Tabs>
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                  <TagsInput
+                    label="Tags"
+                    value={frontMatter.tags || []}
+                    onChange={(newTags) =>
+                      handleFrontMatterChange({
+                        ...frontMatter,
+                        tags: newTags
+                      })
+                    }
+                    placeholder="Add tag and press Enter"
+                  />
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                  <TagsInput
+                    label="Authors"
+                    value={frontMatter.authors || []}
+                    onChange={(newAuthors) =>
+                      handleFrontMatterChange({
+                        ...frontMatter,
+                        authors: newAuthors
+                      })
+                    }
+                    placeholder="Add author and press Enter"
+                  />
+                </Grid.Col>
+              </Grid>
+            </Paper>
+
+            {/* Add FrontMatterCard for additional metadata */}
+            <FrontMatterCard frontMatter={frontMatter} onChange={handleFrontMatterChange} />
+
+            <Box h="calc(100vh - 320px)">
+              <NotionEditor
+                content={editorContent}
+                onChange={(newContent) => setEditorContent(newContent)}
+                onSave={savePost}
+              />
+            </Box>
           </>
         )}
       </AppShell.Main>

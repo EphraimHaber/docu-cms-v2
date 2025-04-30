@@ -1,0 +1,89 @@
+.slash-commands {
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  transition: opacity 0.3s;
+  user-select: none;
+}
+
+.slash-commands-search {
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+  z-index: 1;
+}
+
+.slash-commands-search input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  outline: none;
+}
+
+.slash-commands-search input:focus {
+  border-color: #0366d6;
+  box-shadow: 0 0 0 1px rgba(3, 102, 214, 0.3);
+}
+
+.slash-commands-options {
+  padding: 6px 0;
+}
+
+.slash-command-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.slash-command-option:hover,
+.slash-command-option.selected {
+  background-color: #f6f8fa;
+}
+
+.slash-command-option .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  margin-right: 12px;
+  font-size: 14px;
+  color: #444;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #24292e;
+  margin-bottom: 2px;
+}
+
+.option-description {
+  font-size: 12px;
+  color: #6a737d;
+}
+
+.no-results {
+  padding: 14px;
+  text-align: center;
+  color: #6a737d;
+  font-style: italic;
+  font-size: 13px;
+}

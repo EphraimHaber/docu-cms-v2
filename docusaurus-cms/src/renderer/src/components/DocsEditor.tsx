@@ -4,20 +4,17 @@ import {
   AppShell,
   Button,
   Group,
-  Stack,
-  Title,
   TextInput,
   NumberInput,
   Box,
-  Tabs,
   LoadingOverlay,
   Grid,
   Alert,
-  ActionIcon
+  Paper
 } from '@mantine/core'
-import { Editor } from '@monaco-editor/react'
 import pathUtils from '../utils/path'
-import { renderMarkdownSafe } from '../utils/markdown'
+import NotionEditor from './NotionEditor/Editor'
+import FrontMatterCard from './NotionEditor/FrontMatterCard'
 
 interface DocusaurusContent {
   content: string
@@ -40,9 +37,7 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
 
   const [content, setContent] = useState<DocusaurusContent | null>(null)
   const [editorContent, setEditorContent] = useState('')
-  const [title, setTitle] = useState('')
-  const [sidebarLabel, setSidebarLabel] = useState('')
-  const [sidebarPosition, setSidebarPosition] = useState<number | undefined>(undefined)
+  const [frontMatter, setFrontMatter] = useState<Record<string, any>>({})
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -59,9 +54,7 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
         if (doc) {
           setContent(doc)
           setEditorContent(doc.content)
-          setTitle(doc.data.title || '')
-          setSidebarLabel(doc.data.sidebar_label || '')
-          setSidebarPosition(doc.data.sidebar_position)
+          setFrontMatter(doc.data || {})
         }
       } catch (error) {
         console.error('Failed to load document:', error)
@@ -73,6 +66,11 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
     loadContent()
   }, [decodedFilePath])
 
+  // Handle frontmatter changes
+  const handleFrontMatterChange = (newFrontMatter: Record<string, any>) => {
+    setFrontMatter(newFrontMatter)
+  }
+
   // Save document
   const saveDocument = async () => {
     if (!decodedFilePath || !content) return
@@ -82,28 +80,14 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
     setSaveSuccess(false)
 
     try {
-      // Prepare frontmatter
-      const frontmatter = {
-        ...content.data,
-        title
-      }
-
-      if (sidebarLabel) {
-        frontmatter.sidebar_label = sidebarLabel
-      }
-
-      if (sidebarPosition !== undefined) {
-        frontmatter.sidebar_position = sidebarPosition
-      }
-
-      const success = await window.api.saveFile(decodedFilePath, editorContent, frontmatter)
+      const success = await window.api.saveFile(decodedFilePath, editorContent, frontMatter)
 
       if (success) {
         setSaveSuccess(true)
         // Update local content state
         setContent({
           content: editorContent,
-          data: frontmatter
+          data: frontMatter
         })
 
         // Clear success message after 3 seconds
@@ -171,65 +155,62 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
               </Alert>
             )}
 
-            <Grid mb="md">
-              <Grid.Col span={{ base: 12, sm: 6 }}>
-                <TextInput
-                  label="Title"
-                  value={title}
-                  onChange={(event) => setTitle(event.currentTarget.value)}
-                />
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12, sm: 3 }}>
-                <TextInput
-                  label="Sidebar Label (optional)"
-                  value={sidebarLabel || ''}
-                  onChange={(event) => setSidebarLabel(event.currentTarget.value)}
-                  placeholder="Same as title if empty"
-                />
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12, sm: 3 }}>
-                <NumberInput
-                  label="Sidebar Position (optional)"
-                  value={sidebarPosition}
-                  onChange={(value) => setSidebarPosition(value as number | undefined)}
-                  placeholder="Determines the order"
-                  allowDecimal={false}
-                />
-              </Grid.Col>
-            </Grid>
-
-            <Tabs defaultValue="editor">
-              <Tabs.List>
-                <Tabs.Tab value="editor">Markdown Editor</Tabs.Tab>
-                <Tabs.Tab value="preview">Preview</Tabs.Tab>
-              </Tabs.List>
-
-              <Tabs.Panel value="editor" pt="xs">
-                <Box h="70vh">
-                  <Editor
-                    height="100%"
-                    language="markdown"
-                    value={editorContent}
-                    onChange={(value) => setEditorContent(value || '')}
-                    options={{
-                      wordWrap: 'on',
-                      minimap: { enabled: false }
-                    }}
+            <Paper shadow="xs" p="md" mb="md" withBorder>
+              <Grid>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                  <TextInput
+                    label="Title"
+                    value={frontMatter.title || ''}
+                    onChange={(event) =>
+                      handleFrontMatterChange({
+                        ...frontMatter,
+                        title: event.currentTarget.value
+                      })
+                    }
                   />
-                </Box>
-              </Tabs.Panel>
+                </Grid.Col>
 
-              <Tabs.Panel value="preview" pt="xs">
-                <Box h="70vh" style={{ overflow: 'auto' }} className="preview-container">
-                  <div
-                    className="markdown-content"
-                    dangerouslySetInnerHTML={{ __html: renderMarkdownSafe(editorContent) }}
+                <Grid.Col span={{ base: 12, sm: 3 }}>
+                  <TextInput
+                    label="Sidebar Label (optional)"
+                    value={frontMatter.sidebar_label || ''}
+                    onChange={(event) =>
+                      handleFrontMatterChange({
+                        ...frontMatter,
+                        sidebar_label: event.currentTarget.value
+                      })
+                    }
+                    placeholder="Same as title if empty"
                   />
-                </Box>
-              </Tabs.Panel>
-            </Tabs>
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 12, sm: 3 }}>
+                  <NumberInput
+                    label="Sidebar Position (optional)"
+                    value={frontMatter.sidebar_position}
+                    onChange={(value) =>
+                      handleFrontMatterChange({
+                        ...frontMatter,
+                        sidebar_position: value as number | undefined
+                      })
+                    }
+                    placeholder="Determines the order"
+                    allowDecimal={false}
+                  />
+                </Grid.Col>
+              </Grid>
+            </Paper>
+
+            {/* Add FrontMatterCard for additional metadata */}
+            <FrontMatterCard frontMatter={frontMatter} onChange={handleFrontMatterChange} />
+
+            <Box h="calc(100vh - 320px)">
+              <NotionEditor
+                content={editorContent}
+                onChange={(newContent) => setEditorContent(newContent)}
+                onSave={saveDocument}
+              />
+            </Box>
           </>
         )}
       </AppShell.Main>

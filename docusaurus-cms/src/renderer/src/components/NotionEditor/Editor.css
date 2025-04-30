@@ -1,0 +1,139 @@
+.notion-editor {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 400px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.notion-editor .ProseMirror {
+  outline: none;
+  min-height: 400px;
+  line-height: 1.6;
+}
+
+/* Placeholder styling */
+.notion-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* Headings */
+.notion-editor .ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem;
+  line-height: 1.3;
+}
+
+.notion-editor .ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.4rem 0 0.8rem;
+  line-height: 1.3;
+}
+
+.notion-editor .ProseMirror h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 1.2rem 0 0.7rem;
+  line-height: 1.3;
+}
+
+/* Paragraphs, lists, etc */
+.notion-editor .ProseMirror p {
+  margin: 0.8rem 0;
+}
+
+.notion-editor .ProseMirror ul,
+.notion-editor .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin: 0.8rem 0;
+}
+
+.notion-editor .ProseMirror li {
+  margin: 0.25rem 0;
+}
+
+/* Code blocks */
+.notion-editor .ProseMirror pre {
+  background-color: #f5f7f9;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 0.9rem;
+}
+
+.notion-editor .ProseMirror code {
+  font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  background-color: rgba(135, 131, 120, 0.15);
+  color: #eb5757;
+}
+
+/* Blockquotes */
+.notion-editor .ProseMirror blockquote {
+  border-left: 3px solid #ddd;
+  margin: 1rem 0;
+  padding-left: 1rem;
+  color: #777;
+  font-style: italic;
+}
+
+/* Hover effects for blocks to indicate editability */
+.notion-editor .ProseMirror > * {
+  position: relative;
+  transition: background-color 0.15s;
+}
+
+.notion-editor .ProseMirror > *:hover::before {
+  content: '';
+  position: absolute;
+  left: -1.5rem;
+  top: 0.5rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #ccc;
+}
+
+/* Links */
+.notion-editor .ProseMirror a {
+  color: #3182ce;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Text Selection */
+.notion-editor .ProseMirror ::selection {
+  background: rgba(35, 131, 226, 0.28);
+}
+
+/* Tables */
+.notion-editor .ProseMirror table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.notion-editor .ProseMirror td,
+.notion-editor .ProseMirror th {
+  border: 2px solid #ced4da;
+  padding: 0.5rem;
+}
+
+/* Focus state */
+.notion-editor .ProseMirror:focus {
+  outline: none;
+}
