@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import './AdmonitionComponent.css'
 
-const AdmonitionComponent: React.FC<NodeViewProps> = ({
+export const AdmonitionComponent: React.FC<NodeViewProps> = ({
   node,
   updateAttributes,
   extension,

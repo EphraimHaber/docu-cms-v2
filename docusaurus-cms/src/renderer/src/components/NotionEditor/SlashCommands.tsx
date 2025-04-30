@@ -168,12 +168,17 @@ const SlashCommands = ({ editor }: SlashCommandsProps) => {
   useEffect(() => {
     if (!editor) return
 
-    const updateListener = editor.on('update', () => {
+    // Add event handler for editor updates
+    const handleUpdate = () => {
       handleSlashCommand()
-    })
+    }
 
+    // Add the event listener
+    editor.on('update', handleUpdate)
+
+    // Cleanup function to remove the event listener
     return () => {
-      updateListener()
+      editor.off('update', handleUpdate)
     }
   }, [editor, handleSlashCommand])
 

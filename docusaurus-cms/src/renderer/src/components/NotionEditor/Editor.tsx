@@ -11,7 +11,7 @@ import { MarkdownSerializer } from './MarkdownSerializer'
 import { MarkdownParser } from './MarkdownParser'
 import FloatingMenu from './FloatingMenu'
 import SlashCommands from './SlashCommands'
-import AdmonitionExtension from './extensions/AdmonitionExtension'
+import { AdmonitionExtension } from './extensions/AdmonitionExtension'
 
 interface NotionEditorProps {
   content: string
@@ -27,7 +27,6 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
   // Parse markdown content when it changes
   useEffect(() => {
     try {
-      console.log(content)
       const parsed = MarkdownParser.parse(content)
       setParsedContent(parsed)
     } catch (error) {

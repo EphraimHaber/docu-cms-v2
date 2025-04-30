@@ -1,7 +1,6 @@
-import { Node, mergeAttributes } from '@tiptap/core'
+import { Node, RawCommands, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
-import React from 'react'
-import AdmonitionComponent from './AdmonitionComponent'
+import { AdmonitionComponent } from './AdmonitionComponent'
 
 // Define the structure for admonition attributes
 interface AdmonitionAttributes {
@@ -10,7 +9,7 @@ interface AdmonitionAttributes {
 }
 
 // Create a TipTap extension for Docusaurus admonitions
-const AdmonitionExtension = Node.create({
+export const AdmonitionExtension = Node.create({
   name: 'admonition',
 
   group: 'block',
@@ -60,7 +59,8 @@ const AdmonitionExtension = Node.create({
     return {
       setAdmonition:
         (attributes: AdmonitionAttributes) =>
-        ({ commands }) => {
+        ({ commands }: { commands: RawCommands }) => {
+          console.log({ commands, attributes })
           return commands.setNode(this.name, attributes)
         }
     }
