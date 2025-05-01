@@ -193,7 +193,6 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
               </Grid>
             </Paper>
 
-            {/* Add FrontMatterCard for additional metadata */}
             <FrontMatterCard frontMatter={frontMatter} onChange={handleFrontMatterChange} />
 
             <Box h="calc(100vh - 320px)">

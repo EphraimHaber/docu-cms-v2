@@ -399,7 +399,6 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
                   </Flex>
                 </Box>
                 <Accordion.Panel>
-                  {/* Display categories with their documents */}
                   {structure.categories && structure.categories.length > 0 ? (
                     <Accordion>
                       {structure.categories.map((category) => (
@@ -477,12 +476,11 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
                     </Accordion>
                   ) : null}
 
-                  {/* Display docs that are not in any category */}
                   <Stack
                     gap="xs"
                     mt={structure.categories && structure.categories.length > 0 ? 'md' : 0}
                   >
-                    <Text weight={500} size="sm" mb="xs" mt="md">
+                    <Text size="sm" mb="xs" mt="md">
                       Uncategorized Documents
                     </Text>
                     {getFilteredFiles(getUncategorizedDocs()).map((file) => (
@@ -516,7 +514,7 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
                       mx="md"
                       onClick={() => createNewDocument('blog')}
                     >
-                      +
+                      <IconPlus size={16} />
                     </ActionIcon>
                   </Flex>
                 </Box>
@@ -580,7 +578,6 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
         <Outlet />
       </AppShell.Main>
 
-      {/* Category Editor Modal */}
       {selectedCategory && (
         <CategoryEditor
           opened={categoryEditorOpen}
@@ -590,7 +587,6 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
         />
       )}
 
-      {/* Category Creator Modal */}
       <CategoryCreator
         opened={categoryCreatorOpen}
         onClose={() => setCategoryCreatorOpen(false)}

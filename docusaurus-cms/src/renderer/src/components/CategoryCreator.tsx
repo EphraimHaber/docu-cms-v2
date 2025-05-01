@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, TextInput, Textarea, Stack } from '@mantine/core'
+import { Button, TextInput, Textarea, Stack } from '@mantine/core'
+import CustomModal from './CustomModal'
 
 interface CategoryCreatorProps {
   opened: boolean
@@ -16,6 +17,7 @@ function CategoryCreator({ opened, onClose, onSave }: CategoryCreatorProps) {
 
   // Reset form when modal is opened/closed
   useEffect(() => {
+    console.log('CategoryCreator useEffect triggered, opened:', opened)
     if (!opened) {
       // Reset form when modal closes
       setCategoryName('')
@@ -46,17 +48,7 @@ function CategoryCreator({ opened, onClose, onSave }: CategoryCreatorProps) {
   }
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title="Create New Category"
-      centered
-      size="md"
-      overlayProps={{
-        backgroundOpacity: 0.55,
-        blur: 3
-      }}
-    >
+    <CustomModal isOpen={opened} onClose={onClose} title="Create New Category">
       <Stack>
         <TextInput
           label="Category Name"
@@ -91,7 +83,7 @@ function CategoryCreator({ opened, onClose, onSave }: CategoryCreatorProps) {
           </Button>
         </Button.Group>
       </Stack>
-    </Modal>
+    </CustomModal>
   )
 }
 

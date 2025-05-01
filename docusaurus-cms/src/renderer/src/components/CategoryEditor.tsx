@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, TextInput, Textarea, NumberInput, Stack } from '@mantine/core'
+import { Button, TextInput, Textarea, NumberInput, Stack } from '@mantine/core'
+import CustomModal from './CustomModal'
 
 interface CategoryEditorProps {
   opened: boolean
@@ -49,17 +50,7 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
   }
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title={`Edit Category: ${category.name}`}
-      centered
-      size="md"
-      overlayProps={{
-        backgroundOpacity: 0.55,
-        blur: 3
-      }}
-    >
+    <CustomModal isOpen={opened} onClose={onClose} title={`Edit Category: ${category.name}`}>
       <Stack>
         <TextInput
           label="Category Label"
@@ -73,9 +64,7 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
           label="Position"
           description="The order of the category in the sidebar"
           value={categoryData.position}
-          onChange={(value) =>
-            setCategoryData({ ...categoryData, position: (value as number) || 1 })
-          }
+          onChange={(value) => setCategoryData({ ...categoryData, position: value || 1 })}
           min={1}
           required
         />
@@ -105,7 +94,7 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
           </Button>
         </Button.Group>
       </Stack>
-    </Modal>
+    </CustomModal>
   )
 }
 
