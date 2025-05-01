@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
-  AppShell,
   Button,
   Group,
   TextInput,
@@ -20,9 +19,9 @@ interface DocusaurusContent {
   content: string
   data: {
     title?: string
-    authors?: string[] | Record<string, any>
-    tags?: string[]
     slug?: string
+    tags?: string[]
+    authors?: string[] | Record<string, any>
     [key: string]: any
   }
 }
@@ -121,15 +120,10 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
   }
 
   return (
-    <AppShell padding="md">
+    <>
       <LoadingOverlay visible={loading} />
-
-      <AppShell.Header p="md">
-        <Group justify="space-between">
-          <Button variant="subtle" onClick={() => navigate('/')}>
-            &larr; Back to Dashboard
-          </Button>
-
+      <Box py="md">
+        <Group justify="space-between" mb="md">
           <Group>
             <Button color="red" variant="light" onClick={deletePost}>
               Delete
@@ -139,9 +133,7 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
             </Button>
           </Group>
         </Group>
-      </AppShell.Header>
 
-      <AppShell.Main pt={60}>
         {!loading && content && (
           <>
             {saveError && (
@@ -227,8 +219,8 @@ function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
             </Box>
           </>
         )}
-      </AppShell.Main>
-    </AppShell>
+      </Box>
+    </>
   )
 }
 

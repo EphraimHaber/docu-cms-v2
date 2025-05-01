@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
-  AppShell,
   Button,
   Group,
   TextInput,
@@ -120,15 +119,10 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
   }
 
   return (
-    <AppShell padding="md">
+    <>
       <LoadingOverlay visible={loading} />
-
-      <AppShell.Header p="md">
-        <Group justify="space-between">
-          <Button variant="subtle" onClick={() => navigate('/')}>
-            &larr; Back to Dashboard
-          </Button>
-
+      <Box py="md">
+        <Group justify="space-between" mb="md">
           <Group>
             <Button color="red" variant="light" onClick={deleteDocument}>
               Delete
@@ -138,9 +132,7 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
             </Button>
           </Group>
         </Group>
-      </AppShell.Header>
 
-      <AppShell.Main pt={60}>
         {!loading && content && (
           <>
             {saveError && (
@@ -213,8 +205,8 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
             </Box>
           </>
         )}
-      </AppShell.Main>
-    </AppShell>
+      </Box>
+    </>
   )
 }
 

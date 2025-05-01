@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { AppShell, Button, Group, Text, Box, Alert, LoadingOverlay } from '@mantine/core'
+import { Button, Group, Text, Box, Alert, LoadingOverlay } from '@mantine/core'
 import { Editor } from '@monaco-editor/react'
 import pathUtils from '../utils/path'
 
@@ -83,27 +83,18 @@ function ConfigEditor({ sitePath }: ConfigEditorProps): React.JSX.Element {
   }
 
   return (
-    <AppShell padding="md">
+    <>
       <LoadingOverlay visible={loading} />
-
-      <AppShell.Header p="md">
-        <Group justify="space-between">
-          <Button variant="subtle" onClick={() => navigate('/')}>
-            &larr; Back to Dashboard
+      <Box py="md">
+        <Group justify="space-between" mb="md">
+          <Text fw="bold">
+            {decodedFilePath ? pathUtils.basename(decodedFilePath) : 'Config Editor'}
+          </Text>
+          <Button onClick={saveConfig} loading={isSaving}>
+            Save
           </Button>
-
-          <Group>
-            <Text fw="bold">
-              {decodedFilePath ? pathUtils.basename(decodedFilePath) : 'Config Editor'}
-            </Text>
-            <Button onClick={saveConfig} loading={isSaving}>
-              Save
-            </Button>
-          </Group>
         </Group>
-      </AppShell.Header>
 
-      <AppShell.Main pt={60}>
         {saveError && (
           <Alert color="red" mb="md" withCloseButton onClose={() => setSaveError(null)}>
             {saveError}
@@ -130,8 +121,8 @@ function ConfigEditor({ sitePath }: ConfigEditorProps): React.JSX.Element {
             }}
           />
         </Box>
-      </AppShell.Main>
-    </AppShell>
+      </Box>
+    </>
   )
 }
 

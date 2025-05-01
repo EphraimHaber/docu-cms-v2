@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard'
 import DocsEditor from './components/DocsEditor'
 import BlogEditor from './components/BlogEditor'
 import ConfigEditor from './components/ConfigEditor'
+import MainLayout from './components/layouts/MainLayout'
 import './assets/main.css'
 
 import * as monaco from 'monaco-editor'
@@ -47,10 +48,12 @@ function App(): React.JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard sitePath={sitePath} />} />
-        <Route path="/docs/:filePath" element={<DocsEditor sitePath={sitePath} />} />
-        <Route path="/blog/:filePath" element={<BlogEditor sitePath={sitePath} />} />
-        <Route path="/config/:filePath" element={<ConfigEditor sitePath={sitePath} />} />
+        <Route path="/" element={<MainLayout sitePath={sitePath} />}>
+          <Route index element={<Dashboard sitePath={sitePath} />} />
+          <Route path="/docs/:filePath" element={<DocsEditor sitePath={sitePath} />} />
+          <Route path="/blog/:filePath" element={<BlogEditor sitePath={sitePath} />} />
+          <Route path="/config/:filePath" element={<ConfigEditor sitePath={sitePath} />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

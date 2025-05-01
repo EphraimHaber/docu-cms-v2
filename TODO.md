@@ -13,7 +13,7 @@ DoD: TipTap dependencies are installed and a basic editor component is created
 [x] Task: Create a custom TipTap extension for Docusaurus-specific markdown features (admonitions, code blocks with language specification)
 DoD: Extension enables rendering and editing of Docusaurus-specific content blocks
 
-[ ] Task: Implement block-level editing with Notion-like controls (transform blocks, drag/drop blocks)
+[x] Task: Implement block-level editing with Notion-like controls (transform blocks, drag/drop blocks)
 DoD: Users can easily transform content blocks (e.g., paragraph to heading) and reorder blocks using drag and drop
 
 [x] Task: Add slash commands for block insertion
