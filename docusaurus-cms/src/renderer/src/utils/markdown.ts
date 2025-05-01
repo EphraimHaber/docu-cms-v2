@@ -1,4 +1,4 @@
-import { marked } from 'marked'
+import { marked } from 'marked';
 
 // Configure marked options
 marked.setOptions({
@@ -6,8 +6,8 @@ marked.setOptions({
   breaks: true, // Convert \n to <br>
   pedantic: false,
   headerIds: true,
-  mangle: false
-})
+  mangle: false,
+});
 
 /**
  * Render markdown content to HTML
@@ -15,7 +15,7 @@ marked.setOptions({
  * @returns HTML string
  */
 export function renderMarkdown(markdown: string): string {
-  return marked.parse(markdown)
+  return marked.parse(markdown);
 }
 
 /**
@@ -31,7 +31,7 @@ export function sanitizeHtml(html: string): string {
   return html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/on\w+="[^"]*"/g, '')
-    .replace(/javascript:/g, '')
+    .replace(/javascript:/g, '');
 }
 
 /**
@@ -40,5 +40,5 @@ export function sanitizeHtml(html: string): string {
  * @returns Safe HTML string
  */
 export function renderMarkdownSafe(markdown: string): string {
-  return sanitizeHtml(renderMarkdown(markdown))
+  return sanitizeHtml(renderMarkdown(markdown));
 }

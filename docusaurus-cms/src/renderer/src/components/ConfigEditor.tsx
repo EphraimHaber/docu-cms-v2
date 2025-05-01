@@ -1,86 +1,86 @@
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Button, Group, Text, Box, Alert, LoadingOverlay } from '@mantine/core'
-import { Editor } from '@monaco-editor/react'
-import pathUtils from '../utils/path'
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Button, Group, Text, Box, Alert, LoadingOverlay } from '@mantine/core';
+import { Editor } from '@monaco-editor/react';
+import pathUtils from '../utils/path';
 
 interface ConfigEditorProps {
-  sitePath: string
+  sitePath: string;
 }
 
 function ConfigEditor({ sitePath }: ConfigEditorProps): React.JSX.Element {
-  const { filePath } = useParams<{ filePath: string }>()
-  const navigate = useNavigate()
-  const decodedFilePath = filePath ? decodeURIComponent(filePath) : ''
+  const { filePath } = useParams<{ filePath: string }>();
+  const navigate = useNavigate();
+  const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
 
-  const [content, setContent] = useState<string>('')
-  const [loading, setLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-  const [saveError, setSaveError] = useState<string | null>(null)
-  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [content, setContent] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Determine the language for Monaco editor based on file extension
   const getFileLanguage = () => {
-    if (!decodedFilePath) return 'javascript'
-    if (decodedFilePath.endsWith('.ts')) return 'typescript'
-    if (decodedFilePath.endsWith('.js')) return 'javascript'
-    if (decodedFilePath.endsWith('.json')) return 'json'
-    return 'javascript'
-  }
+    if (!decodedFilePath) return 'javascript';
+    if (decodedFilePath.endsWith('.ts')) return 'typescript';
+    if (decodedFilePath.endsWith('.js')) return 'javascript';
+    if (decodedFilePath.endsWith('.json')) return 'json';
+    return 'javascript';
+  };
 
   // Load config file content
   useEffect(() => {
     async function loadContent() {
-      if (!decodedFilePath) return
+      if (!decodedFilePath) return;
 
-      setLoading(true)
+      setLoading(true);
       try {
         // Read the file through our API
-        const response = await window.api.readFile(decodedFilePath)
+        const response = await window.api.readFile(decodedFilePath);
         if (response) {
           // For config files, gray-matter will put the whole file in the content field
           // if there's no frontmatter
-          setContent(response.content)
+          setContent(response.content);
         }
       } catch (error) {
-        console.error('Failed to load config file:', error)
+        console.error('Failed to load config file:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    loadContent()
-  }, [decodedFilePath])
+    loadContent();
+  }, [decodedFilePath]);
 
   // Save config file
   const saveConfig = async () => {
-    if (!decodedFilePath) return
+    if (!decodedFilePath) return;
 
-    setIsSaving(true)
-    setSaveError(null)
-    setSaveSuccess(false)
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
 
     try {
       // For config files, we'll write with an empty frontmatter
-      const success = await window.api.saveFile(decodedFilePath, content, {})
+      const success = await window.api.saveFile(decodedFilePath, content, {});
 
       if (success) {
-        setSaveSuccess(true)
+        setSaveSuccess(true);
 
         // Clear success message after 3 seconds
         setTimeout(() => {
-          setSaveSuccess(false)
-        }, 3000)
+          setSaveSuccess(false);
+        }, 3000);
       } else {
-        setSaveError('Failed to save config file')
+        setSaveError('Failed to save config file');
       }
     } catch (error) {
-      console.error('Error saving config file:', error)
-      setSaveError('Error saving config file')
+      console.error('Error saving config file:', error);
+      setSaveError('Error saving config file');
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   return (
     <>
@@ -117,13 +117,13 @@ function ConfigEditor({ sitePath }: ConfigEditorProps): React.JSX.Element {
               wordWrap: 'on',
               tabSize: 2,
               lineNumbers: 'on',
-              renderWhitespace: 'boundary'
+              renderWhitespace: 'boundary',
             }}
           />
         </Box>
       </Box>
     </>
-  )
+  );
 }
 
-export default ConfigEditor
+export default ConfigEditor;

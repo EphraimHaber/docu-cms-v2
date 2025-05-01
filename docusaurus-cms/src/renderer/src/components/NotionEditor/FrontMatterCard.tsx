@@ -1,35 +1,35 @@
-import React, { useState } from 'react'
-import './FrontMatterCard.css'
+import React, { useState } from 'react';
+import './FrontMatterCard.css';
 
 interface FrontMatterCardProps {
-  frontMatter: Record<string, any>
-  onChange: (newFrontMatter: Record<string, any>) => void
+  frontMatter: Record<string, any>;
+  onChange: (newFrontMatter: Record<string, any>) => void;
 }
 
 const FrontMatterCard = ({ frontMatter, onChange }: FrontMatterCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [localFrontMatter, setLocalFrontMatter] = useState(frontMatter)
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [localFrontMatter, setLocalFrontMatter] = useState(frontMatter);
 
   const handleChange = (key: string, value: any) => {
-    const newFrontMatter = { ...localFrontMatter, [key]: value }
-    setLocalFrontMatter(newFrontMatter)
-    onChange(newFrontMatter)
-  }
+    const newFrontMatter = { ...localFrontMatter, [key]: value };
+    setLocalFrontMatter(newFrontMatter);
+    onChange(newFrontMatter);
+  };
 
   const handleAddField = () => {
-    const newKey = `newField${Object.keys(localFrontMatter).length}`
-    handleChange(newKey, '')
-  }
+    const newKey = `newField${Object.keys(localFrontMatter).length}`;
+    handleChange(newKey, '');
+  };
 
   const handleRemoveField = (key: string) => {
-    const newFrontMatter = { ...localFrontMatter }
-    delete newFrontMatter[key]
-    setLocalFrontMatter(newFrontMatter)
-    onChange(newFrontMatter)
-  }
+    const newFrontMatter = { ...localFrontMatter };
+    delete newFrontMatter[key];
+    setLocalFrontMatter(newFrontMatter);
+    onChange(newFrontMatter);
+  };
 
   // Don't render certain fields that are handled separately in the UI
-  const excludedFields = ['title', 'sidebar_label', 'sidebar_position', 'tags', 'authors', 'slug']
+  const excludedFields = ['title', 'sidebar_label', 'sidebar_position', 'tags', 'authors', 'slug'];
 
   return (
     <div className="front-matter-card">
@@ -49,11 +49,11 @@ const FrontMatterCard = ({ frontMatter, onChange }: FrontMatterCardProps) => {
                     type="text"
                     value={key}
                     onChange={(e) => {
-                      const newFrontMatter = { ...localFrontMatter }
-                      delete newFrontMatter[key]
-                      newFrontMatter[e.target.value] = value
-                      setLocalFrontMatter(newFrontMatter)
-                      onChange(newFrontMatter)
+                      const newFrontMatter = { ...localFrontMatter };
+                      delete newFrontMatter[key];
+                      newFrontMatter[e.target.value] = value;
+                      setLocalFrontMatter(newFrontMatter);
+                      onChange(newFrontMatter);
                     }}
                   />
                 </div>
@@ -83,8 +83,8 @@ const FrontMatterCard = ({ frontMatter, onChange }: FrontMatterCardProps) => {
                 <button
                   className="remove-field"
                   onClick={(e) => {
-                    e.stopPropagation()
-                    handleRemoveField(key)
+                    e.stopPropagation();
+                    handleRemoveField(key);
                   }}
                   title="Remove field"
                 >
@@ -99,7 +99,7 @@ const FrontMatterCard = ({ frontMatter, onChange }: FrontMatterCardProps) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default FrontMatterCard
+export default FrontMatterCard;

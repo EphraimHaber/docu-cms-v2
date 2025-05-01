@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, Outlet, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import {
   AppShell,
   Text,
@@ -16,130 +16,130 @@ import {
   Box,
   Flex,
   Menu,
-  rem
-} from '@mantine/core'
-import pathUtils from '../../utils/path'
-import CategoryEditor from '../CategoryEditor'
-import CategoryCreator from '../CategoryCreator'
-import matter from 'gray-matter'
+  rem,
+} from '@mantine/core';
+import pathUtils from '../../utils/path';
+import CategoryEditor from '../CategoryEditor';
+import CategoryCreator from '../CategoryCreator';
+import matter from 'gray-matter';
 
 // Import icons from Tabler
-import { IconDots, IconEdit, IconPlus, IconFolder, IconTrash } from '@tabler/icons-react'
+import { IconDots, IconEdit, IconPlus, IconFolder, IconTrash } from '@tabler/icons-react';
 
 interface MainLayoutProps {
-  sitePath: string
+  sitePath: string;
 }
 
 interface DocCategory {
-  name: string
-  label: string
-  description?: string
-  position: number
-  docs: string[]
+  name: string;
+  label: string;
+  description?: string;
+  position: number;
+  docs: string[];
 }
 
 interface ProjectStructure {
-  docs: string[]
-  categories: DocCategory[]
-  blog: string[]
-  config: string[]
+  docs: string[];
+  categories: DocCategory[];
+  blog: string[];
+  config: string[];
 }
 
 function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [structure, setStructure] = useState<ProjectStructure | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [structure, setStructure] = useState<ProjectStructure | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // State for category editor
-  const [categoryEditorOpen, setCategoryEditorOpen] = useState(false)
+  const [categoryEditorOpen, setCategoryEditorOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{
-    name: string
-    path: string
-    data: any
-  } | null>(null)
+    name: string;
+    path: string;
+    data: any;
+  } | null>(null);
 
   // State for category creator
-  const [categoryCreatorOpen, setCategoryCreatorOpen] = useState(false)
+  const [categoryCreatorOpen, setCategoryCreatorOpen] = useState(false);
 
   // Load project structure
   useEffect(() => {
     async function loadStructure() {
       try {
-        const projectStructure = await window.api.getProjectStructure()
-        setStructure(projectStructure)
+        const projectStructure = await window.api.getProjectStructure();
+        setStructure(projectStructure);
       } catch (error) {
-        console.error('Failed to load project structure:', error)
+        console.error('Failed to load project structure:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    loadStructure()
-  }, [sitePath])
+    loadStructure();
+  }, [sitePath]);
 
   // Sort documents within categories by sidebar_position or filename
   const sortDocumentsInCategory = async (docs: string[]) => {
-    const sortedDocs = [...docs]
+    const sortedDocs = [...docs];
 
     // Create a map to store document positions
-    const positionMap = new Map<string, number>()
+    const positionMap = new Map<string, number>();
 
     // Read each document to get its sidebar_position
     for (const doc of docs) {
       try {
-        const docContent = await window.api.readFile(doc)
+        const docContent = await window.api.readFile(doc);
         if (!docContent) {
-          console.error(`Failed to read document ${doc}`)
-          continue
+          console.error(`Failed to read document ${doc}`);
+          continue;
         }
-        const { data } = matter(docContent)
+        const { data } = matter(docContent);
 
         // Use sidebar_position if available, otherwise use a high number
-        const position = data.sidebar_position || data.sidebarPosition || 999
-        positionMap.set(doc, position)
+        const position = data.sidebar_position || data.sidebarPosition || 999;
+        positionMap.set(doc, position);
       } catch (error) {
-        console.error(`Error reading document ${doc}:`, error)
-        positionMap.set(doc, 999) // Default to high number if error
+        console.error(`Error reading document ${doc}:`, error);
+        positionMap.set(doc, 999); // Default to high number if error
       }
     }
 
     // Sort documents by position, then by filename if positions are equal
     sortedDocs.sort((a, b) => {
-      const posA = positionMap.get(a) || 999
-      const posB = positionMap.get(b) || 999
+      const posA = positionMap.get(a) || 999;
+      const posB = positionMap.get(b) || 999;
 
       if (posA !== posB) {
-        return posA - posB
+        return posA - posB;
       }
 
       // If positions are equal, sort by filename
-      return pathUtils.basename(a).localeCompare(pathUtils.basename(b))
-    })
+      return pathUtils.basename(a).localeCompare(pathUtils.basename(b));
+    });
 
-    return sortedDocs
-  }
+    return sortedDocs;
+  };
 
   // Filter files by search term
   const getFilteredFiles = (files: string[] = []) => {
-    if (!searchTerm) return files
+    if (!searchTerm) return files;
     return files.filter((file) =>
-      pathUtils.basename(file).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  }
+      pathUtils.basename(file).toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  };
 
   // Create a new document
   const createNewDocument = async (type: 'docs' | 'blog') => {
-    const now = new Date()
-    const dateString = now.toISOString().split('T')[0] // YYYY-MM-DD
-    const defaultTitle = type === 'docs' ? 'New Document' : 'New Blog Post'
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0]; // YYYY-MM-DD
+    const defaultTitle = type === 'docs' ? 'New Document' : 'New Blog Post';
 
     // Generate a default filename
-    let filename = ''
+    let filename = '';
     if (type === 'docs') {
-      filename = `new-document-${Date.now()}.md`
-      const filePath = pathUtils.join(sitePath, 'docs', filename)
+      filename = `new-document-${Date.now()}.md`;
+      const filePath = pathUtils.join(sitePath, 'docs', filename);
 
       const created = await window.api.createFile(
         filePath,
@@ -147,21 +147,21 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
         '## New Document\n\nStart writing your document here.',
         {
           title: defaultTitle,
-          sidebar_position: 100
-        }
-      )
+          sidebar_position: 100,
+        },
+      );
 
       if (created) {
         // Refresh the project structure
-        const projectStructure = await window.api.getProjectStructure()
-        setStructure(projectStructure)
+        const projectStructure = await window.api.getProjectStructure();
+        setStructure(projectStructure);
 
         // Navigate to the editor
-        navigate(`/docs/${encodeURIComponent(filePath)}`)
+        navigate(`/docs/${encodeURIComponent(filePath)}`);
       }
     } else if (type === 'blog') {
-      filename = `${dateString}-new-post.md`
-      const filePath = pathUtils.join(sitePath, 'blog', filename)
+      filename = `${dateString}-new-post.md`;
+      const filePath = pathUtils.join(sitePath, 'blog', filename);
 
       const created = await window.api.createFile(
         filePath,
@@ -171,59 +171,59 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
           title: defaultTitle,
           authors: ['default'],
           tags: ['uncategorized'],
-          slug: `new-post-${Date.now()}`
-        }
-      )
+          slug: `new-post-${Date.now()}`,
+        },
+      );
 
       if (created) {
         // Refresh the project structure
-        const projectStructure = await window.api.getProjectStructure()
-        setStructure(projectStructure)
+        const projectStructure = await window.api.getProjectStructure();
+        setStructure(projectStructure);
 
         // Navigate to the editor
-        navigate(`/blog/${encodeURIComponent(filePath)}`)
+        navigate(`/blog/${encodeURIComponent(filePath)}`);
       }
     }
-  }
+  };
 
   // Create a relative path for display
   const getRelativePath = (fullPath: string) => {
-    if (!sitePath) return fullPath
+    if (!sitePath) return fullPath;
 
     // Get path relative to site root
-    const relativePath = fullPath.replace(sitePath, '')
-    return relativePath.startsWith('/') ? relativePath.slice(1) : relativePath
-  }
+    const relativePath = fullPath.replace(sitePath, '');
+    return relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+  };
 
   // Handle file selection to navigate to the appropriate editor
   const handleSelectFile = (filePath: string) => {
     if (filePath.includes('/docs/') || filePath.includes('\\docs\\')) {
-      navigate(`/docs/${encodeURIComponent(filePath)}`)
+      navigate(`/docs/${encodeURIComponent(filePath)}`);
     } else if (filePath.includes('/blog/') || filePath.includes('\\blog\\')) {
-      navigate(`/blog/${encodeURIComponent(filePath)}`)
+      navigate(`/blog/${encodeURIComponent(filePath)}`);
     } else if (filePath.endsWith('.js') || filePath.endsWith('.ts')) {
-      navigate(`/config/${encodeURIComponent(filePath)}`)
+      navigate(`/config/${encodeURIComponent(filePath)}`);
     }
-  }
+  };
 
   const getUncategorizedDocs = () => {
-    if (!structure) return []
-    const categorizedDocs = structure.categories.flatMap((category) => category.docs)
-    return structure.docs.filter((doc) => !categorizedDocs.includes(doc))
-  }
+    if (!structure) return [];
+    const categorizedDocs = structure.categories.flatMap((category) => category.docs);
+    return structure.docs.filter((doc) => !categorizedDocs.includes(doc));
+  };
 
   // Create a new document in a specific category
   const createNewDocumentInCategory = async (categoryName: string) => {
-    const now = new Date()
-    const timestamp = Date.now()
-    const defaultTitle = 'New Document'
+    const now = new Date();
+    const timestamp = Date.now();
+    const defaultTitle = 'New Document';
 
     // Find the category path
-    const categoryPath = pathUtils.join(sitePath, 'docs', categoryName)
+    const categoryPath = pathUtils.join(sitePath, 'docs', categoryName);
 
     // Generate a filename based on the title
-    const filename = `new-document-${timestamp}.md`
-    const filePath = pathUtils.join(categoryPath, filename)
+    const filename = `new-document-${timestamp}.md`;
+    const filePath = pathUtils.join(categoryPath, filename);
 
     const created = await window.api.createFile(
       filePath,
@@ -231,24 +231,24 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
       '## New Document\n\nStart writing your document here.',
       {
         title: defaultTitle,
-        sidebar_position: 100
-      }
-    )
+        sidebar_position: 100,
+      },
+    );
 
     if (created) {
       // Refresh the project structure
-      const projectStructure = await window.api.getProjectStructure()
-      setStructure(projectStructure)
+      const projectStructure = await window.api.getProjectStructure();
+      setStructure(projectStructure);
 
       // Navigate to the editor
-      navigate(`/docs/${encodeURIComponent(filePath)}`)
+      navigate(`/docs/${encodeURIComponent(filePath)}`);
     }
-  }
+  };
 
   // Handle editing a category
   const handleEditCategory = (category: DocCategory) => {
-    const categoryPath = pathUtils.join(sitePath, 'docs', category.name)
-    const categoryFile = pathUtils.join(categoryPath, '_category_.json')
+    const categoryPath = pathUtils.join(sitePath, 'docs', category.name);
+    const categoryFile = pathUtils.join(categoryPath, '_category_.json');
 
     setSelectedCategory({
       name: category.name,
@@ -258,29 +258,29 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
         position: category.position,
         link: {
           type: 'generated-index',
-          description: category.description || ''
-        }
-      }
-    })
+          description: category.description || '',
+        },
+      },
+    });
 
-    setCategoryEditorOpen(true)
-  }
+    setCategoryEditorOpen(true);
+  };
 
   // Save category changes
   const handleSaveCategory = async (categoryData: any) => {
-    if (!selectedCategory) return
+    if (!selectedCategory) return;
 
     try {
       // Save the category file
-      await window.api.saveFile(selectedCategory.path, '', categoryData)
+      await window.api.saveFile(selectedCategory.path, '', categoryData);
 
       // Refresh the structure
-      const projectStructure = await window.api.getProjectStructure()
-      setStructure(projectStructure)
+      const projectStructure = await window.api.getProjectStructure();
+      setStructure(projectStructure);
     } catch (error) {
-      console.error('Failed to save category:', error)
+      console.error('Failed to save category:', error);
     }
-  }
+  };
 
   // Handle creating a new category from the modal
   const handleCreateCategory = async (categoryData: { name: string; description: string }) => {
@@ -290,26 +290,26 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
       .replace(/[^\w\s-]/g, '') // Remove special chars except whitespace and hyphen
       .replace(/\s+/g, '-') // Replace spaces with hyphens
       .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-      .trim()
+      .trim();
 
     if (!dirName) {
       // Show error if invalid name
-      alert('Please enter a valid category name using letters, numbers, spaces, or hyphens')
-      return
+      alert('Please enter a valid category name using letters, numbers, spaces, or hyphens');
+      return;
     }
 
     // Find max position from existing categories
-    let maxPosition = 0
+    let maxPosition = 0;
     if (structure?.categories) {
       structure.categories.forEach((category) => {
         if (category.position > maxPosition) {
-          maxPosition = category.position
+          maxPosition = category.position;
         }
-      })
+      });
     }
 
-    const categoryPath = pathUtils.join(sitePath, 'docs', dirName)
-    const categoryFile = pathUtils.join(categoryPath, '_category_.json')
+    const categoryPath = pathUtils.join(sitePath, 'docs', dirName);
+    const categoryFile = pathUtils.join(categoryPath, '_category_.json');
 
     // Create directory if it doesn't exist
     try {
@@ -319,20 +319,20 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
         position: maxPosition + 1,
         link: {
           type: 'generated-index',
-          description: categoryData.description || `Documentation for ${categoryData.name}`
-        }
-      })
+          description: categoryData.description || `Documentation for ${categoryData.name}`,
+        },
+      });
 
       // Create a sample document in the category
-      await createNewDocumentInCategory(dirName)
+      await createNewDocumentInCategory(dirName);
 
       // Refresh the structure
-      const projectStructure = await window.api.getProjectStructure()
-      setStructure(projectStructure)
+      const projectStructure = await window.api.getProjectStructure();
+      setStructure(projectStructure);
     } catch (error) {
-      console.error('Failed to create category:', error)
+      console.error('Failed to create category:', error);
     }
-  }
+  };
 
   return (
     <AppShell header={{ height: 60 }} navbar={{ width: 300, breakpoint: 'sm' }} padding="md">
@@ -376,8 +376,8 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
                       color="blue"
                       mx="md"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        createNewDocument('docs')
+                        e.stopPropagation();
+                        createNewDocument('docs');
                       }}
                       title="Add new document"
                     >
@@ -389,8 +389,8 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
                       color="green"
                       mr="md"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        setCategoryCreatorOpen(true)
+                        e.stopPropagation();
+                        setCategoryCreatorOpen(true);
                       }}
                       title="Add new category"
                     >
@@ -414,8 +414,8 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
                                 color="blue"
                                 mx="md"
                                 onClick={(e) => {
-                                  e.stopPropagation()
-                                  createNewDocumentInCategory(category.name)
+                                  e.stopPropagation();
+                                  createNewDocumentInCategory(category.name);
                                 }}
                                 title="Add document to this category"
                               >
@@ -438,8 +438,8 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
                                       <IconEdit style={{ width: rem(14), height: rem(14) }} />
                                     }
                                     onClick={(e) => {
-                                      e.stopPropagation()
-                                      handleEditCategory(category)
+                                      e.stopPropagation();
+                                      handleEditCategory(category);
                                     }}
                                   >
                                     Edit Category
@@ -593,7 +593,7 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
         onSave={handleCreateCategory}
       />
     </AppShell>
-  )
+  );
 }
 
-export default MainLayout
+export default MainLayout;

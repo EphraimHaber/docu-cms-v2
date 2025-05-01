@@ -1,39 +1,39 @@
-import React, { useEffect, useRef } from 'react'
-import { Editor } from '@tiptap/react'
-import './FloatingMenu.css'
+import React, { useEffect, useRef } from 'react';
+import { Editor } from '@tiptap/react';
+import './FloatingMenu.css';
 
 interface FloatingMenuProps {
-  editor: Editor
+  editor: Editor;
 }
 
 const FloatingMenu = ({ editor }: FloatingMenuProps) => {
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const { view } = editor
-    const { state } = view
+    const { view } = editor;
+    const { state } = view;
 
-    if (!menuRef.current) return
+    if (!menuRef.current) return;
 
-    const { from, to } = state.selection
-    if (from === to) return
+    const { from, to } = state.selection;
+    if (from === to) return;
 
     // Get the coordinates of the selection
-    const start = view.coordsAtPos(from)
-    const end = view.coordsAtPos(to)
+    const start = view.coordsAtPos(from);
+    const end = view.coordsAtPos(to);
 
-    const menuElement = menuRef.current
-    const menuRect = menuElement.getBoundingClientRect()
+    const menuElement = menuRef.current;
+    const menuRect = menuElement.getBoundingClientRect();
 
     // Position the menu above the selection, centered
-    const left = (start.left + end.left) / 2 - menuRect.width / 2
-    const top = start.top - menuRect.height - 10
+    const left = (start.left + end.left) / 2 - menuRect.width / 2;
+    const top = start.top - menuRect.height - 10;
 
-    menuElement.style.left = `${Math.max(5, left)}px`
-    menuElement.style.top = `${Math.max(5, top)}px`
-  }, [editor])
+    menuElement.style.left = `${Math.max(5, left)}px`;
+    menuElement.style.top = `${Math.max(5, top)}px`;
+  }, [editor]);
 
-  if (!editor.isActive) return null
+  if (!editor.isActive) return null;
 
   return (
     <div className="floating-menu" ref={menuRef}>
@@ -67,9 +67,9 @@ const FloatingMenu = ({ editor }: FloatingMenuProps) => {
       </button>
       <button
         onClick={() => {
-          const url = window.prompt('Enter the URL')
+          const url = window.prompt('Enter the URL');
           if (url) {
-            editor.chain().focus().setLink({ href: url }).run()
+            editor.chain().focus().setLink({ href: url }).run();
           }
         }}
         className={editor.isActive('link') ? 'is-active' : ''}
@@ -85,7 +85,7 @@ const FloatingMenu = ({ editor }: FloatingMenuProps) => {
         H
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default FloatingMenu
+export default FloatingMenu;

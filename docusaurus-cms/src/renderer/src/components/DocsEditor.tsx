@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Button,
   Group,
@@ -9,114 +9,114 @@ import {
   LoadingOverlay,
   Grid,
   Alert,
-  Paper
-} from '@mantine/core'
-import pathUtils from '../utils/path'
-import NotionEditor from './NotionEditor/Editor'
-import FrontMatterCard from './NotionEditor/FrontMatterCard'
+  Paper,
+} from '@mantine/core';
+import pathUtils from '../utils/path';
+import NotionEditor from './NotionEditor/Editor';
+import FrontMatterCard from './NotionEditor/FrontMatterCard';
 
 interface DocusaurusContent {
-  content: string
+  content: string;
   data: {
-    title?: string
-    sidebar_label?: string
-    sidebar_position?: number
-    [key: string]: any
-  }
+    title?: string;
+    sidebar_label?: string;
+    sidebar_position?: number;
+    [key: string]: any;
+  };
 }
 
 interface DocsEditorProps {
-  sitePath: string
+  sitePath: string;
 }
 
 function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
-  const { filePath } = useParams<{ filePath: string }>()
-  const navigate = useNavigate()
-  const decodedFilePath = filePath ? decodeURIComponent(filePath) : ''
+  const { filePath } = useParams<{ filePath: string }>();
+  const navigate = useNavigate();
+  const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
 
-  const [content, setContent] = useState<DocusaurusContent | null>(null)
-  const [editorContent, setEditorContent] = useState('')
-  const [frontMatter, setFrontMatter] = useState<Record<string, any>>({})
-  const [loading, setLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-  const [saveError, setSaveError] = useState<string | null>(null)
-  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [content, setContent] = useState<DocusaurusContent | null>(null);
+  const [editorContent, setEditorContent] = useState('');
+  const [frontMatter, setFrontMatter] = useState<Record<string, any>>({});
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Load document content
   useEffect(() => {
     async function loadContent() {
-      if (!decodedFilePath) return
+      if (!decodedFilePath) return;
 
-      setLoading(true)
+      setLoading(true);
       try {
-        const doc = await window.api.readFile(decodedFilePath)
+        const doc = await window.api.readFile(decodedFilePath);
         if (doc) {
-          setContent(doc)
-          setEditorContent(doc.content)
-          setFrontMatter(doc.data || {})
+          setContent(doc);
+          setEditorContent(doc.content);
+          setFrontMatter(doc.data || {});
         }
       } catch (error) {
-        console.error('Failed to load document:', error)
+        console.error('Failed to load document:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    loadContent()
-  }, [decodedFilePath])
+    loadContent();
+  }, [decodedFilePath]);
 
   // Handle frontmatter changes
   const handleFrontMatterChange = (newFrontMatter: Record<string, any>) => {
-    setFrontMatter(newFrontMatter)
-  }
+    setFrontMatter(newFrontMatter);
+  };
 
   // Save document
   const saveDocument = async () => {
-    if (!decodedFilePath || !content) return
+    if (!decodedFilePath || !content) return;
 
-    setIsSaving(true)
-    setSaveError(null)
-    setSaveSuccess(false)
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
 
     try {
-      const success = await window.api.saveFile(decodedFilePath, editorContent, frontMatter)
+      const success = await window.api.saveFile(decodedFilePath, editorContent, frontMatter);
 
       if (success) {
-        setSaveSuccess(true)
+        setSaveSuccess(true);
         // Update local content state
         setContent({
           content: editorContent,
-          data: frontMatter
-        })
+          data: frontMatter,
+        });
 
         // Clear success message after 3 seconds
         setTimeout(() => {
-          setSaveSuccess(false)
-        }, 3000)
+          setSaveSuccess(false);
+        }, 3000);
       } else {
-        setSaveError('Failed to save document')
+        setSaveError('Failed to save document');
       }
     } catch (error) {
-      console.error('Error saving document:', error)
-      setSaveError('Error saving document')
+      console.error('Error saving document:', error);
+      setSaveError('Error saving document');
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   // Delete document
   const deleteDocument = async () => {
-    if (!decodedFilePath) return
+    if (!decodedFilePath) return;
 
     if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
       try {
-        await window.api.deleteFile(decodedFilePath)
-        navigate('/')
+        await window.api.deleteFile(decodedFilePath);
+        navigate('/');
       } catch (error) {
-        console.error('Failed to delete document:', error)
+        console.error('Failed to delete document:', error);
       }
     }
-  }
+  };
 
   return (
     <>
@@ -156,7 +156,7 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
                     onChange={(event) =>
                       handleFrontMatterChange({
                         ...frontMatter,
-                        title: event.currentTarget.value
+                        title: event.currentTarget.value,
                       })
                     }
                   />
@@ -169,7 +169,7 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
                     onChange={(event) =>
                       handleFrontMatterChange({
                         ...frontMatter,
-                        sidebar_label: event.currentTarget.value
+                        sidebar_label: event.currentTarget.value,
                       })
                     }
                     placeholder="Same as title if empty"
@@ -183,7 +183,7 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
                     onChange={(value) =>
                       handleFrontMatterChange({
                         ...frontMatter,
-                        sidebar_position: value as number | undefined
+                        sidebar_position: value as number | undefined,
                       })
                     }
                     placeholder="Determines the order"
@@ -206,7 +206,7 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
         )}
       </Box>
     </>
-  )
+  );
 }
 
-export default DocsEditor
+export default DocsEditor;

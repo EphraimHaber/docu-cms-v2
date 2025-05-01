@@ -1,51 +1,51 @@
-import { useState, useEffect } from 'react'
-import { Button, TextInput, Textarea, Stack } from '@mantine/core'
-import CustomModal from './CustomModal'
+import { useState, useEffect } from 'react';
+import { Button, TextInput, Textarea, Stack } from '@mantine/core';
+import CustomModal from './CustomModal';
 
 interface CategoryCreatorProps {
-  opened: boolean
-  onClose: () => void
-  onSave: (categoryData: { name: string; description: string }) => Promise<void>
+  opened: boolean;
+  onClose: () => void;
+  onSave: (categoryData: { name: string; description: string }) => Promise<void>;
 }
 
 function CategoryCreator({ opened, onClose, onSave }: CategoryCreatorProps) {
-  const [categoryName, setCategoryName] = useState('')
-  const [description, setDescription] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [categoryName, setCategoryName] = useState('');
+  const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log('CategoryCreator opened:', opened)
+  console.log('CategoryCreator opened:', opened);
 
   // Reset form when modal is opened/closed
   useEffect(() => {
-    console.log('CategoryCreator useEffect triggered, opened:', opened)
+    console.log('CategoryCreator useEffect triggered, opened:', opened);
     if (!opened) {
       // Reset form when modal closes
-      setCategoryName('')
-      setDescription('')
-      setIsSubmitting(false)
+      setCategoryName('');
+      setDescription('');
+      setIsSubmitting(false);
     }
-  }, [opened])
+  }, [opened]);
 
   const handleSave = async () => {
-    if (!categoryName.trim()) return
+    if (!categoryName.trim()) return;
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       await onSave({
         name: categoryName,
-        description
-      })
+        description,
+      });
 
       // Reset form
-      setCategoryName('')
-      setDescription('')
-      onClose()
+      setCategoryName('');
+      setDescription('');
+      onClose();
     } catch (error) {
-      console.error('Failed to create category:', error)
+      console.error('Failed to create category:', error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <CustomModal isOpen={opened} onClose={onClose} title="Create New Category">
@@ -84,7 +84,7 @@ function CategoryCreator({ opened, onClose, onSave }: CategoryCreatorProps) {
         </Button.Group>
       </Stack>
     </CustomModal>
-  )
+  );
 }
 
-export default CategoryCreator
+export default CategoryCreator;

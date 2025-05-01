@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react'
-import { Button, TextInput, Textarea, NumberInput, Stack } from '@mantine/core'
-import CustomModal from './CustomModal'
+import { useState, useEffect } from 'react';
+import { Button, TextInput, Textarea, NumberInput, Stack } from '@mantine/core';
+import CustomModal from './CustomModal';
 
 interface CategoryEditorProps {
-  opened: boolean
-  onClose: () => void
-  onSave: (categoryData: CategoryData) => Promise<void>
+  opened: boolean;
+  onClose: () => void;
+  onSave: (categoryData: CategoryData) => Promise<void>;
   category: {
-    name: string
-    path: string
-    data: CategoryData
-  }
+    name: string;
+    path: string;
+    data: CategoryData;
+  };
 }
 
 interface CategoryData {
-  label: string
-  position: number
+  label: string;
+  position: number;
   link: {
-    type: string
-    description: string
-  }
+    type: string;
+    description: string;
+  };
 }
 
 function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorProps) {
@@ -28,9 +28,9 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
     position: category.data.position || 1,
     link: {
       type: category.data.link?.type || 'generated-index',
-      description: category.data.link?.description || ''
-    }
-  })
+      description: category.data.link?.description || '',
+    },
+  });
 
   // When the category changes, update state
   useEffect(() => {
@@ -39,15 +39,15 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
       position: category.data.position || 1,
       link: {
         type: category.data.link?.type || 'generated-index',
-        description: category.data.link?.description || ''
-      }
-    })
-  }, [category])
+        description: category.data.link?.description || '',
+      },
+    });
+  }, [category]);
 
   const handleSave = async () => {
-    await onSave(categoryData)
-    onClose()
-  }
+    await onSave(categoryData);
+    onClose();
+  };
 
   return (
     <CustomModal isOpen={opened} onClose={onClose} title={`Edit Category: ${category.name}`}>
@@ -64,7 +64,9 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
           label="Position"
           description="The order of the category in the sidebar"
           value={categoryData.position}
-          onChange={(value) => setCategoryData({ ...categoryData, position: value || 1 })}
+          onChange={(value) =>
+            setCategoryData({ ...categoryData, position: (value as number) || 1 })
+          }
           min={1}
           required
         />
@@ -78,8 +80,8 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
               ...categoryData,
               link: {
                 ...categoryData.link,
-                description: e.target.value
-              }
+                description: e.target.value,
+              },
             })
           }
           minRows={3}
@@ -95,7 +97,7 @@ function CategoryEditor({ opened, onClose, onSave, category }: CategoryEditorPro
         </Button.Group>
       </Stack>
     </CustomModal>
-  )
+  );
 }
 
-export default CategoryEditor
+export default CategoryEditor;

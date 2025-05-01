@@ -1,15 +1,15 @@
-import { Paper, Group, Title, CloseButton } from '@mantine/core'
-import './CustomModal.css'
+import { Paper, Group, Title, CloseButton } from '@mantine/core';
+import './CustomModal.css';
 
 interface CustomModalProps {
-  isOpen: boolean
-  onClose: () => void
-  title: string
-  children: React.ReactNode
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
 }
 
 function CustomModal({ isOpen, onClose, title, children }: CustomModalProps) {
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -23,7 +23,7 @@ function CustomModal({ isOpen, onClose, title, children }: CustomModalProps) {
         </Paper>
       </div>
     </div>
-  )
+  );
 }
 
-export default CustomModal
+export default CustomModal;

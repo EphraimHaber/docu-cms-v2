@@ -4,3 +4,9 @@ pnpm-lock.yaml
 LICENSE.md
 tsconfig.json
 tsconfig.*.json
+package.json
+pnpm-lock.yaml
+.vscode
+.angular
+node_modules
+src/assets
