@@ -26,6 +26,7 @@
     "@mantine/core": "^7.17.5",
     "@mantine/hooks": "^7.17.5",
     "@monaco-editor/react": "^4.7.0",
+    "@tabler/icons-react": "^3.31.0",
     "@tiptap/extension-code-block-lowlight": "^2.11.9",
     "@tiptap/extension-highlight": "^2.11.9",
     "@tiptap/extension-link": "^2.11.9",

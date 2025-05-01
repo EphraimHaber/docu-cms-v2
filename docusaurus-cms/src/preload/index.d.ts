@@ -12,9 +12,9 @@ interface DocusaurusContent {
     [key: string]: any
   }
 }
-
 interface ProjectStructure {
   docs: string[]
+  categories: DocCategory[]
   blog: string[]
   config: string[]
 }
