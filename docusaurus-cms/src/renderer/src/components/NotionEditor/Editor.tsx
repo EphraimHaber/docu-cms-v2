@@ -1,7 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import GlobalDragHandle from 'tiptap-extension-global-drag-handle'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import { createLowlight } from 'lowlight'
@@ -57,7 +57,8 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
         }
       }),
       Highlight,
-      AdmonitionExtension
+      AdmonitionExtension,
+      GlobalDragHandle
     ],
     content: parsedContent,
     autofocus: 'end',

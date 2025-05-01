@@ -7,16 +7,16 @@ Installation: Packaged as an application but potentially triggerable via an npm 
 
 ## Phase 1: TipTap Editor Integration
 
-[ ] Task: Install and set up TipTap editor in the project
+[x] Task: Install and set up TipTap editor in the project
 DoD: TipTap dependencies are installed and a basic editor component is created
 
-[ ] Task: Create a custom TipTap extension for Docusaurus-specific markdown features (admonitions, code blocks with language specification)
+[x] Task: Create a custom TipTap extension for Docusaurus-specific markdown features (admonitions, code blocks with language specification)
 DoD: Extension enables rendering and editing of Docusaurus-specific content blocks
 
 [ ] Task: Implement block-level editing with Notion-like controls (transform blocks, drag/drop blocks)
 DoD: Users can easily transform content blocks (e.g., paragraph to heading) and reorder blocks using drag and drop
 
-[ ] Task: Add slash commands for block insertion
+[x] Task: Add slash commands for block insertion
 DoD: Typing "/" brings up a command palette for inserting various content blocks
 
 [ ] Task: Implement floating format menu on text selection
@@ -27,7 +27,7 @@ DoD: Selecting text shows a floating toolbar with formatting options
 [ ] Task: Apply Docusaurus styling to TipTap editor content
 DoD: Content in the editor visually resembles how it will appear in the final site
 
-[ ] Task: Create custom TipTap nodes for admonitions (tip, warning, danger, info, etc.)
+[x] Task: Create custom TipTap nodes for admonitions (tip, warning, danger, info, etc.)
 DoD: Users can insert and edit admonition blocks that render similar to actual Docusaurus output
 
 [ ] Task: Implement dark/light theme toggle for preview
