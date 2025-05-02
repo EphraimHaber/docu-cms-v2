@@ -11,24 +11,7 @@ import { MarkdownParser } from './MarkdownParser';
 import FloatingMenu from './FloatingMenu';
 import SlashCommands from './SlashCommands';
 import { AdmonitionExtension } from './extensions/AdmonitionExtension';
-import { CodeBlockExtension } from './extensions/CodeBlockExtension';
-
-import css from 'highlight.js/lib/languages/css';
-import js from 'highlight.js/lib/languages/javascript';
-import ts from 'highlight.js/lib/languages/typescript';
-import html from 'highlight.js/lib/languages/xml';
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-// load all languages with "all" or common languages with "common"
-import { all, createLowlight } from 'lowlight';
-import { CodeBlockPrism } from './extensions/PrismCodeBlockExtension';
-
-// create a lowlight instance with all languages loaded
-const lowlight = createLowlight(all);
-
-lowlight.register('html', html);
-lowlight.register('css', css);
-lowlight.register('js', js);
-lowlight.register('ts', ts);
+import { MonacoCodeBlock } from './extensions/MonacoCodeBlock/MonacoCodeBlockExtension';
 
 interface NotionEditorProps {
   content: string;
@@ -62,11 +45,6 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
 
   const editor = useEditor({
     extensions: [
-      // CodeBlockLowlight.configure({
-      //   lowlight,
-      // }),
-      // Use StarterKit but exclude the default codeBlock extension
-      CodeBlockPrism.configure({ defaultLanguage: 'jsx' }),
       StarterKit.configure({
         codeBlock: false,
       }),
@@ -80,10 +58,10 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
         },
       }),
       Highlight,
-      AdmonitionExtension,
-      // Add our custom codeBlock extension
-      // CodeBlockExtension,
       GlobalDragHandle,
+      // custom extensions
+      MonacoCodeBlock,
+      AdmonitionExtension,
     ],
     content: parsedContent,
     autofocus: 'end',
