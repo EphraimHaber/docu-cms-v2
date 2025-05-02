@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState, ChangeEvent } from 'react';
+import React, { useEffect, useRef, useState, ChangeEvent, KeyboardEvent } from 'react';
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import * as monaco from 'monaco-editor';
+import './MonacoCodeBlockView.css';
 
 // Define the props for our component with proper types
 interface MonacoCodeBlockViewProps extends NodeViewProps {}
@@ -52,6 +53,20 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
 
   // Store initial content in a ref to compare with later
   const initialContentRef = useRef<string>(node.textContent);
+
+  // Handle delete action
+  const handleDelete = () => {
+    if (typeof getPos === 'function') {
+      const pos = getPos();
+      const tr = editor.state.tr;
+      const nodeAtPos = editor.state.doc.nodeAt(pos);
+
+      if (nodeAtPos) {
+        tr.delete(pos, pos + nodeAtPos.nodeSize);
+        editor.view.dispatch(tr);
+      }
+    }
+  };
 
   // Initialize Monaco editor
   useEffect(() => {
@@ -193,25 +208,53 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
   ];
 
   return (
-    <NodeViewWrapper className="monaco-code-block">
-      <div className="code-block-header">
-        <select value={language} onChange={onLanguageChange} className="language-selector">
-          {languages.map((lang) => (
-            <option key={lang} value={lang}>
-              {lang}
-            </option>
-          ))}
-        </select>
+    <NodeViewWrapper className="monaco-code-block-wrapper">
+      <div className="monaco-code-block">
+        <div className="code-block-header" contentEditable={false}>
+          <span className="language-label">Language:</span>
+          <select
+            value={language}
+            onChange={onLanguageChange}
+            className="language-selector"
+            tabIndex={-1} // Remove from tab order
+          >
+            {languages.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            ))}
+          </select>
+          <button
+            className="delete-code-block-button"
+            onClick={handleDelete}
+            title="Delete code block"
+            tabIndex={-1}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          contentEditable={false}
+          ref={editorRef}
+          className="monaco-editor-container"
+          style={{
+            height: '200px',
+            width: '100%',
+            marginBottom: '0.5rem',
+          }}
+        />
       </div>
-      <div
-        ref={editorRef}
-        className="monaco-editor-container"
-        style={{
-          height: '200px',
-          width: '100%',
-          marginBottom: '0.5rem',
-        }}
-      />
     </NodeViewWrapper>
   );
 };

@@ -1,0 +1,60 @@
+.monaco-code-block {
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e1e4e8;
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #e1e4e8;
+  user-select: none;
+}
+
+.language-label {
+  font-size: 13px;
+  margin-right: 8px;
+  color: #586069;
+  font-weight: 500;
+}
+
+.language-selector {
+  background-color: white;
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 4px 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+.delete-code-block-button {
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #586069;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-code-block-button:hover {
+  background-color: #e1e4e8;
+  color: #cb2431;
+}
+
+.monaco-editor-container {
+  border: none;
+  background-color: #1e1e1e;
+}
+
+/* Ensure the Monaco editor's cursor doesn't get clipped */
+.monaco-code-block .monaco-editor .cursors-layer {
+  z-index: 3;
+}
