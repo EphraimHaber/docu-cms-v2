@@ -112,3 +112,118 @@
   display: inline-block;
   font-size: 15px;
 }
+
+/* Monaco Editor Modal Styles */
+.code-block-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.code-block-modal {
+  background-color: #1e1e1e;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 1000px;
+  height: 80%;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.code-block-modal-header {
+  background-color: #252526;
+  padding: 15px 20px;
+  border-bottom: 1px solid #3c3c3c;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.code-block-modal-header h3 {
+  margin: 0;
+  color: #e9ecef;
+  font-size: 16px;
+}
+
+.code-block-modal-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.code-block-modal-controls .code-block-title-input {
+  flex-grow: 1;
+  background-color: #3c3c3c;
+  border: none;
+  color: #e9ecef;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.code-block-modal-controls .code-block-language-select {
+  background-color: #3c3c3c;
+  border: none;
+  color: #e9ecef;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  min-width: 120px;
+}
+
+.code-block-modal-editor {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.code-block-modal-editor .monaco-editor {
+  height: 100% !important;
+}
+
+.code-block-modal-footer {
+  background-color: #252526;
+  padding: 15px 20px;
+  border-top: 1px solid #3c3c3c;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.code-block-modal-footer button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.code-block-modal-footer .code-block-save-btn {
+  background-color: #0e639c;
+  color: white;
+}
+
+.code-block-modal-footer .code-block-save-btn:hover {
+  background-color: #1177bb;
+}
+
+.code-block-modal-footer .code-block-cancel-btn {
+  background-color: #3c3c3c;
+  color: white;
+}
+
+.code-block-modal-footer .code-block-cancel-btn:hover {
+  background-color: #515151;
+}
