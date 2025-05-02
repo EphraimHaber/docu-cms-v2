@@ -86,19 +86,6 @@
   margin-right: 0.5rem;
 }
 
-.code-block-pre {
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow-x: auto;
-  font-size: 0.85rem;
-  line-height: 1.5;
-}
-
-.code-block-pre code {
-  display: block;
-  padding: 0.5rem 0;
-}
-
 .code-block-line-number {
   display: inline-block;
   width: 2rem;
