@@ -13,11 +13,8 @@ function CategoryCreator({ opened, onClose, onSave }: CategoryCreatorProps) {
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log('CategoryCreator opened:', opened);
-
   // Reset form when modal is opened/closed
   useEffect(() => {
-    console.log('CategoryCreator useEffect triggered, opened:', opened);
     if (!opened) {
       // Reset form when modal closes
       setCategoryName('');

@@ -170,6 +170,10 @@ export async function createNewFile(
   await fs.mkdir(dir, { recursive: true });
 
   // Create frontmatter with title
+  if (filePath.endsWith('.json')) {
+    await saveDocusaurusFile(filePath, content, frontmatter);
+    return;
+  }
   const defaultFrontmatter = {
     title,
     ...frontmatter,

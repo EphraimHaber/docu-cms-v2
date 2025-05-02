@@ -32,7 +32,6 @@ export class MarkdownParser {
     const closingRegex = /^:::$/;
 
     const transformAdmonitions = (nodes: any[], startIndex: number, parentNode: any) => {
-      console.log({ nodes });
       for (let i = startIndex; i < nodes.length; i++) {
         const node = nodes[i];
 
