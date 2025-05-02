@@ -138,9 +138,26 @@ export class MarkdownParser {
         };
 
       case 'code':
+        // Parse code block with title if present
+        let language = node.lang || '';
+        let title = '';
+
+        // Check if language contains title metadata
+        if (language && language.includes('title=')) {
+          const titleMatch = language.match(/title="([^"]+)"/);
+          if (titleMatch && titleMatch[1]) {
+            title = titleMatch[1];
+            // Remove title from language string
+            language = language.replace(/\s*title="[^"]+"/, '').trim();
+          }
+        }
+
         return {
           type: 'codeBlock',
-          attrs: { language: node.lang || '' },
+          attrs: {
+            language: language,
+            title: title,
+          },
           content: [{ type: 'text', text: node.value || '' }],
         };
 

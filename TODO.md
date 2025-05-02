@@ -55,7 +55,7 @@ DoD: Special fields like tags, dates, etc. have appropriate UI controls
 [ ] Task: Enhance markdown parser to convert all Docusaurus markdown features to TipTap nodes
 DoD: All Docusaurus markdown content (including MDX) is correctly rendered as TipTap content
 
-[ ] Task: Create TipTap-to-markdown serializer that preserves formatting
+[x] Task: Create TipTap-to-markdown serializer that preserves formatting
 DoD: Edited content is saved as clean, properly formatted markdown compatible with Docusaurus
 
 [ ] Task: Support for MDX components with props editing

@@ -4,7 +4,6 @@ import Placeholder from '@tiptap/extension-placeholder';
 import GlobalDragHandle from 'tiptap-extension-global-drag-handle';
 import Highlight from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link';
-import { createLowlight } from 'lowlight';
 import React, { useState, useEffect } from 'react';
 import './Editor.css';
 import { MarkdownSerializer } from './MarkdownSerializer';
@@ -12,6 +11,7 @@ import { MarkdownParser } from './MarkdownParser';
 import FloatingMenu from './FloatingMenu';
 import SlashCommands from './SlashCommands';
 import { AdmonitionExtension } from './extensions/AdmonitionExtension';
+import { CodeBlockExtension } from './extensions/CodeBlockExtension';
 
 interface NotionEditorProps {
   content: string;
@@ -22,7 +22,6 @@ interface NotionEditorProps {
 const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.JSX.Element => {
   const [selectedText, setSelectedText] = useState('');
   const [parsedContent, setParsedContent] = useState<any>(null);
-  const lowlight = createLowlight();
 
   // Parse markdown content when it changes
   useEffect(() => {
@@ -46,7 +45,10 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      // Use StarterKit but exclude the default codeBlock extension
+      StarterKit.configure({
+        codeBlock: false,
+      }),
       Placeholder.configure({
         placeholder: 'Type "/" for commands...',
       }),
@@ -58,6 +60,8 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
       }),
       Highlight,
       AdmonitionExtension,
+      // Add our custom codeBlock extension
+      CodeBlockExtension,
       GlobalDragHandle,
     ],
     content: parsedContent,

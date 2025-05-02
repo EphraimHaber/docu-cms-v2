@@ -1,0 +1,114 @@
+.code-block-wrapper {
+  margin: 1rem 0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.code-block-container {
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  background-color: #343a40;
+  color: #e9ecef;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #495057;
+}
+
+.code-block-title {
+  font-weight: 500;
+  margin-right: auto;
+}
+
+.code-block-language {
+  background-color: #495057;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.75rem;
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.code-block-edit-btn,
+.code-block-save-btn,
+.code-block-cancel-btn {
+  background-color: transparent;
+  border: 1px solid #6c757d;
+  color: #e9ecef;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.code-block-edit-btn:hover,
+.code-block-save-btn:hover,
+.code-block-cancel-btn:hover {
+  background-color: #495057;
+}
+
+.code-block-save-btn {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.code-block-save-btn:hover {
+  background-color: #218838;
+}
+
+.code-block-cancel-btn {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.code-block-cancel-btn:hover {
+  background-color: #c82333;
+}
+
+.code-block-title-input {
+  background-color: #343a40;
+  border: 1px solid #495057;
+  color: #e9ecef;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  flex-grow: 1;
+}
+
+.code-block-language-select {
+  background-color: #343a40;
+  border: 1px solid #495057;
+  color: #e9ecef;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.code-block-pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.code-block-pre code {
+  display: block;
+  padding: 0.5rem 0;
+}
+
+.code-block-line-number {
+  display: inline-block;
+  width: 2rem;
+  user-select: none;
+  opacity: 0.5;
+  text-align: right;
+  margin-right: 1rem;
+}
+
+.code-block-line-content {
+  display: inline-block;
+  font-size: 15px;
+}

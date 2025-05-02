@@ -31,21 +31,25 @@ export class MarkdownSerializer {
         return this.serializeContent(node.content);
 
       case 'codeBlock':
-        return (
-          '```' +
-          (node.attrs?.language || '') +
-          '\n' +
-          this.serializeContent(node.content) +
-          '\n```'
-        );
+        const language = node.attrs?.language || '';
+        const title = node.attrs?.title || '';
+        let codeMarkdown = '```' + language;
+
+        // Add title using Docusaurus syntax if provided
+        if (title) {
+          codeMarkdown += ' title="' + title + '"';
+        }
+
+        codeMarkdown += '\n' + this.serializeContent(node.content) + '\n```';
+        return codeMarkdown;
 
       case 'blockquote':
         return '> ' + this.serializeContent(node.content);
 
       case 'admonition':
         const type = node.attrs?.type || 'note';
-        const title = node.attrs?.title || '';
-        const titleStr = title ? ` ${title}` : '';
+        const titleAdmonition = node.attrs?.title || '';
+        const titleStr = titleAdmonition ? ` ${titleAdmonition}` : '';
         return `:::${type}${titleStr}\n\n${this.serializeContent(node.content)}\n\n:::`;
 
       default:
