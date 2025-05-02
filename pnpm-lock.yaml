@@ -61,6 +61,9 @@ importers:
       marked:
         specifier: ^15.0.11
         version: 15.0.11
+      prism-react-renderer:
+        specifier: ^2.3.0
+        version: 2.4.1(react@19.1.0)
       react-router-dom:
         specifier: ^7.5.3
         version: 7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

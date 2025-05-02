@@ -110,6 +110,7 @@ function ConfigEditor({ sitePath }: ConfigEditorProps): React.JSX.Element {
         <Box h="85vh">
           <Editor
             height="100%"
+            width="75dvw"
             language={getFileLanguage()}
             value={content}
             onChange={(value) => setContent(value || '')}
