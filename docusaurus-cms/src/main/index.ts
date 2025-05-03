@@ -1,6 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain, dialog, protocol } from 'electron';
 import path from 'path';
-import fs from 'fs';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
