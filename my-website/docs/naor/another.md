@@ -2,7 +2,6 @@
 title: New Document
 sidebar_position: 100
 ---
-## New Document
 
 ```typescript
 const calculateTotal = (items: number[]) => {
@@ -12,8 +11,6 @@ const items = [1, 2, 3]
 let total = calculateTotal(items);
 const lol = calculateTotal(items);
 ```
-
-Start writing your document here.
 
 ```typescript
 const calculateTotal = (items: number[]) => {

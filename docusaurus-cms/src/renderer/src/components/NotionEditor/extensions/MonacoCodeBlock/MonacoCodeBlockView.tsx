@@ -83,6 +83,17 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
     }
   };
 
+  // Check if this node is the first node in the document
+  const isFirstNode = useCallback(() => {
+    if (typeof getPos !== 'function') return false;
+
+    const pos = getPos();
+    if (pos === undefined) return false;
+
+    // Check if position is 0 (first node)
+    return pos === 0;
+  }, [getPos]);
+
   useEffect(() => {
     if (editorRef.current && !monacoInstance.current) {
       monacoInstance.current = monaco.editor.create(editorRef.current, {
@@ -240,6 +251,15 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
         }
       });
 
+      // Set focus to this editor if it's the first node
+      if (isFirstNode()) {
+        setTimeout(() => {
+          if (monacoInstance.current) {
+            monacoInstance.current.focus();
+          }
+        }, 100); // Short delay to ensure editor is fully initialized
+      }
+
       setEditorMounted(true);
     }
 
@@ -249,7 +269,7 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
         monacoInstance.current = null;
       }
     };
-  }, [insertNodeAfter, getPos, editor, node.nodeSize, language]);
+  }, [insertNodeAfter, getPos, editor, node.nodeSize, language, isFirstNode]);
 
   useEffect(() => {
     if (monacoInstance.current && editorMounted) {
