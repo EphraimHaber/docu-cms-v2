@@ -22,6 +22,9 @@ This is a tip without a title
     expect(parsedContent).toHaveProperty('content');
 
     // Verify both admonitions were parsed
+    if (!parsedContent.content) {
+      throw new Error('Parsed content does not contain any nodes');
+    }
     const admonitions = parsedContent.content.filter((node: any) => node.type === 'admonition');
 
     expect(admonitions).toHaveLength(2);
@@ -81,10 +84,15 @@ Content
 `;
 
       const parsed = MarkdownParser.parse(markdown);
-      console.log(JSON.stringify(parsed));
+      if (!parsed.content) {
+        throw new Error('Parsed content does not contain any nodes');
+      }
       const admonitions = parsed.content.filter((node: any) => node.type === 'admonition');
 
       expect(admonitions.length).toBeGreaterThan(0);
+      if (!admonitions[0].attrs) {
+        throw new Error('Admonition does not have attributes');
+      }
       expect(admonitions[0].attrs.type).toBe(type);
     }
   });
