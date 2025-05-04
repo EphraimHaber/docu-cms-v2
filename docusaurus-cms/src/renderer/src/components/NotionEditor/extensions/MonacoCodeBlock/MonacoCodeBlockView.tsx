@@ -52,6 +52,23 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
   const initialContentRef = useRef<string>(node.textContent);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  // Function to insert a new paragraph node before the current node
+  const insertNodeBefore = useCallback(() => {
+    if (typeof getPos !== 'function') return;
+
+    const pos = getPos();
+    if (pos === undefined) return;
+
+    const tr = editor.state.tr;
+    const newNode = editor.schema.nodes.paragraph.create();
+
+    tr.insert(pos, newNode);
+    editor.view.dispatch(tr);
+
+    // Focus the newly created node
+    editor.commands.focus(pos);
+  }, [editor, getPos]);
+
   // Function to insert a new paragraph node after the current node
   const insertNodeAfter = useCallback(() => {
     if (typeof getPos !== 'function') return;
@@ -201,7 +218,12 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
             if (position.lineNumber === 1 && position.column === 1) {
               e.preventDefault();
               e.stopPropagation();
-              if (typeof getPos === 'function') {
+
+              // If it's the first node, insert a new paragraph node before it
+              if (isFirstNode()) {
+                insertNodeBefore();
+              } else if (typeof getPos === 'function') {
+                // Otherwise, navigate to the node above as before
                 const pos = getPos();
                 if (pos !== undefined) {
                   editor.commands.focus(pos);
@@ -219,7 +241,12 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
             if (position.lineNumber === 1 && position.column === 1) {
               e.preventDefault();
               e.stopPropagation();
-              if (typeof getPos === 'function') {
+
+              // If it's the first node, insert a new paragraph node before it
+              if (isFirstNode()) {
+                insertNodeBefore();
+              } else if (typeof getPos === 'function') {
+                // Otherwise, navigate to the node above as before
                 const pos = getPos();
                 if (pos !== undefined) {
                   editor.commands.focus(pos);
