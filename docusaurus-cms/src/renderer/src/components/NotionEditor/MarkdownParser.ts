@@ -9,6 +9,19 @@ export class MarkdownParser {
    * Convert markdown string to TipTap-compatible JSON structure
    */
   static parse(markdown: string): JSONContent {
+    // Handle empty content case
+    if (!markdown || markdown.trim() === '') {
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: ' ' }], // Add a space to avoid empty text node error
+          },
+        ],
+      };
+    }
+
     const processor = unified()
       .use(remarkParse)
       .use(remarkGfm)
@@ -107,22 +120,52 @@ export class MarkdownParser {
     // Handle different node types
     switch (node.type) {
       case 'root':
+        const rootContent = this.transformChildren(node);
+        // Ensure root node always has content
+        if (!rootContent.length) {
+          return {
+            type: 'doc',
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: ' ' }],
+              },
+            ],
+          };
+        }
         return {
           type: 'doc',
-          content: this.transformChildren(node),
+          content: rootContent,
         };
 
       case 'paragraph':
+        const paraContent = this.transformChildren(node);
+        // Ensure paragraph has content to avoid empty text node errors
+        if (!paraContent.length) {
+          return {
+            type: 'paragraph',
+            content: [{ type: 'text', text: ' ' }],
+          };
+        }
         return {
           type: 'paragraph',
-          content: this.transformChildren(node),
+          content: paraContent,
         };
 
       case 'heading':
+        const headingContent = this.transformChildren(node);
+        // Ensure heading always has content
+        if (!headingContent.length) {
+          return {
+            type: 'heading',
+            attrs: { level: node.depth },
+            content: [{ type: 'text', text: ' ' }],
+          };
+        }
         return {
           type: 'heading',
           attrs: { level: node.depth },
-          content: this.transformChildren(node),
+          content: headingContent,
         };
 
       case 'list':
@@ -152,13 +195,16 @@ export class MarkdownParser {
           }
         }
 
+        // Ensure code block always has non-empty content
+        const codeValue = node.value || ' ';
+
         return {
           type: 'codeBlock',
           attrs: {
             language: language,
             title: title,
           },
-          content: [{ type: 'text', text: node.value || '' }],
+          content: [{ type: 'text', text: codeValue }],
         };
 
       case 'blockquote':

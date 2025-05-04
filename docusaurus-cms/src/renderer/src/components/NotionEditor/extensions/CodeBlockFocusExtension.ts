@@ -6,70 +6,101 @@ export const CodeBlockFocusExtension = Extension.create({
   addKeyboardShortcuts() {
     return {
       ArrowDown: ({ editor }) => {
-        // Get the current selection
         const { selection, doc } = editor.state;
         const { from, to, empty } = selection;
 
-        // Only proceed if it's a cursor position (not a selection)
         if (!empty) {
           return false;
         }
 
-        // Check if we're at the end of a node (paragraph, heading, etc)
         const $pos = selection.$from;
-        const isAtEndOfNode = $pos.pos === $pos.end();
 
-        if (!isAtEndOfNode) {
+        const currentNode = $pos.node();
+
+        const textContent = currentNode.textContent;
+
+        if (!textContent) {
           return false;
         }
 
+        // Find the line breaks in the text
+        const lines = textContent.split('\n');
+
+        if (lines.length <= 1) {
+          const isAtEndOfNode = $pos.pos === $pos.end();
+          if (!isAtEndOfNode) {
+            return false;
+          }
+        } else {
+          // For multi-line nodes, we need to check if we're on the last line
+          // Get the relative position of the cursor within the node
+          const nodeStartPos = $pos.start();
+          const offsetInNode = $pos.pos - nodeStartPos;
+
+          // Find the start position of the last line in the text
+          const allButLastLine = lines.slice(0, -1).join('\n');
+          const lastLineStartOffset = allButLastLine.length + 1; // +1 for the \n character
+
+          // If we're not on the last line, let TipTap handle it normally
+          if (offsetInNode < lastLineStartOffset) {
+            return false;
+          }
+
+          // We're on the last line, continue with our custom handling
+        }
+
         // Check if the next node is a code block
-        const currentNode = $pos.node();
         const nextPos = $pos.after();
         const nextNode = doc.nodeAt(nextPos);
 
         if (nextNode && nextNode.type.name === 'codeBlock') {
-          console.log('Down arrow pressed at end of node before code block');
+          console.log('Down arrow pressed with next node being a code block');
 
-          // Find the DOM element for the code block
-          // Using setTimeout to ensure we're not interfering with TipTap's own handling
+          // Focus the Monaco editor after TipTap has done its default handling
           setTimeout(() => {
-            // Handle focusing on code block
             try {
-              // First, let TipTap move the selection to the code block
-              // We need to wait for TipTap to select the codeBlock before we can find its DOM element
               const nodeView = editor.view.nodeDOM(nextPos) as HTMLElement;
 
               if (nodeView) {
-                // Look for the Monaco editor inside this specific node view
+                // Find the Monaco editor container
                 const editorContainer = nodeView.querySelector('.monaco-editor-container');
                 if (editorContainer) {
-                  // Find the hidden textarea that Monaco actually uses for input
-                  const textareas = editorContainer.querySelectorAll('textarea');
-                  if (textareas.length > 0) {
-                    // Focus the textarea
-                    textareas[0].focus();
-                    console.log('Found and focused Monaco editor textarea directly');
+                  // Try to find the textarea that Monaco uses for input
+                  const monacoTextarea = nodeView.querySelector('.monaco-editor textarea');
+                  if (monacoTextarea) {
+                    (monacoTextarea as HTMLTextAreaElement).focus();
+                    console.log('Focused Monaco editor textarea directly');
                   } else {
-                    // If we can't find the textarea, try clicking the editor container
-                    editorContainer.click();
+                    // If textarea not found, try to click the editor container
+                    (editorContainer as HTMLElement).click();
                     console.log('Clicked editor container');
                   }
-                } else {
-                  console.log('Could not find Monaco editor container within node');
+                  return;
                 }
-              } else {
-                console.log('Could not find node DOM element');
               }
+
+              // Fallback method: Try to find Monaco editors by class
+              const monacoEditors = document.querySelectorAll('.monaco-editor');
+              for (let i = 0; i < monacoEditors.length; i++) {
+                const editor = monacoEditors[i];
+                const textarea = editor.querySelector('textarea');
+                if (textarea) {
+                  (textarea as HTMLTextAreaElement).focus();
+                  console.log('Focused Monaco editor textarea (fallback method)');
+                  return;
+                }
+              }
+
+              console.log('Could not find Monaco editor to focus');
             } catch (e) {
               console.error('Error focusing code block:', e);
             }
-          }, 10); // Small delay to ensure DOM is updated
+          }, 10);
 
-          return false; // Let TipTap handle the initial cursor movement
+          return false;
         }
 
-        return false; // Let TipTap handle other cases
+        return false;
       },
     };
   },
