@@ -148,6 +148,7 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
       monacoInstance.current.onKeyDown((e) => {
         if (!monacoInstance.current) return;
 
+        // Check for ArrowDown key
         if (e.keyCode === monaco.KeyCode.DownArrow) {
           const model = monacoInstance.current.getModel();
           const position = monacoInstance.current.getPosition();
@@ -156,10 +157,27 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
             const lastLineNumber = model.getLineCount();
             const lastLineMaxColumn = model.getLineMaxColumn(lastLineNumber);
 
+            // Check if cursor is at the end of the last line
             if (position.lineNumber === lastLineNumber && position.column === lastLineMaxColumn) {
               e.preventDefault();
               e.stopPropagation();
-              insertNodeAfter();
+
+              // Check if this is the last node in the document
+              if (typeof getPos === 'function') {
+                const pos = getPos();
+                if (pos !== undefined) {
+                  const endPos = pos + node.nodeSize;
+                  const docSize = editor.state.doc.content.size;
+
+                  if (endPos >= docSize) {
+                    // It's the last node, insert a new one after
+                    insertNodeAfter();
+                  } else {
+                    // It's not the last node, focus the next node
+                    editor.commands.focus(endPos);
+                  }
+                }
+              }
             }
           }
         }
@@ -231,7 +249,7 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
         monacoInstance.current = null;
       }
     };
-  }, [insertNodeAfter, getPos, editor, node.nodeSize]);
+  }, [insertNodeAfter, getPos, editor, node.nodeSize, language]);
 
   useEffect(() => {
     if (monacoInstance.current && editorMounted) {
