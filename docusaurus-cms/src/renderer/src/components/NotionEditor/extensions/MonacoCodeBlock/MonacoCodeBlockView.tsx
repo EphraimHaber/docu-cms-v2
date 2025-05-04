@@ -22,7 +22,6 @@ type ProgrammingLanguage =
   | 'rust'
   | 'shell';
 
-// Simple debounce function
 const debounce = (func: Function, wait: number) => {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -68,10 +67,8 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
     }
   };
 
-  // Initialize Monaco editor
   useEffect(() => {
     if (editorRef.current && !monacoInstance.current) {
-      // Create Monaco editor
       monacoInstance.current = monaco.editor.create(editorRef.current, {
         value: node.textContent,
         language: language,
