@@ -8,9 +8,13 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/renderer/test/setup.ts'],
-    alias: {
-      '@': resolve(__dirname, './src/renderer/src')
-    },
-    include: ['./src/renderer/src/**/*.{test,spec}.{ts,tsx}']
+    alias: [
+      { find: '@', replacement: resolve(__dirname, './src/renderer/src') },
+      {
+        find: /^monaco-editor$/,
+        replacement: resolve(__dirname, './node_modules/monaco-editor/esm/vs/editor/editor.api'),
+      },
+    ],
+    include: ['./src/renderer/src/**/*.{test,spec}.{ts,tsx}'],
   },
 });
