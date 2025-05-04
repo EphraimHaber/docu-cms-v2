@@ -103,7 +103,7 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
   }
 
   return (
-    <div className="notion-editor" onKeyDown={handleKeyDown}>
+    <div data-testid="notion-editor" className="notion-editor" onKeyDown={handleKeyDown}>
       {editor && selectedText && <FloatingMenu editor={editor} />}
       {editor && <SlashCommands editor={editor} />}
       <EditorContent editor={editor} />

@@ -61,7 +61,7 @@ DoD: Edited content is saved as clean, properly formatted markdown compatible wi
 [ ] Task: Support for MDX components with props editing
 DoD: MDX components can be edited including their props
 
-[ ] Task: Handle code blocks with syntax highlighting in the editor
+[x] Task: Handle code blocks with syntax highlighting in the editor
 DoD: Code blocks have proper syntax highlighting and language selection in the editor
 
 ## Phase 5: Asset Management

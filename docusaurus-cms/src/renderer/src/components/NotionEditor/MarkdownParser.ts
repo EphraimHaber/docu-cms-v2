@@ -40,75 +40,83 @@ export class MarkdownParser {
    * Process Docusaurus-style admonitions in the markdown AST
    * Converts :::note, :::tip, etc. to special nodes
    */
-  private static processAdmonitions(tree: any) {
+  private static processAdmonitions(tree: any): void {
     const admonitionRegex = /^:::(\w+)(?:\s+(.+?))?\s*$/;
-    const closingRegex = /^:::$/;
+    const closingRegex = /^:::\s*$/;
 
-    const transformAdmonitions = (nodes: any[], startIndex: number, parentNode: any) => {
-      for (let i = startIndex; i < nodes.length; i++) {
-        const node = nodes[i];
+    const splitInlineAdmonitions = (nodes: any[]): any[] => {
+      const newNodes: any[] = [];
 
+      for (const node of nodes) {
         if (
           node.type === 'paragraph' &&
-          node.children &&
-          node.children[0] &&
+          node.children?.length === 1 &&
           node.children[0].type === 'text'
         ) {
-          const match = node.children[0].value.match(admonitionRegex);
-          if (match) {
-            const type = match[1];
-            const title = match[2] || '';
-
-            // Look for closing tag
-            let endIndex = -1;
-            const content: any[] = [];
-
-            for (let j = i + 1; j < nodes.length; j++) {
-              const nextNode = nodes[j];
-              if (
-                nextNode.type === 'paragraph' &&
-                nextNode.children &&
-                nextNode.children[0] &&
-                nextNode.children[0].type === 'text' &&
-                nextNode.children[0].value.match(closingRegex)
-              ) {
-                endIndex = j;
-                break;
-              } else {
-                content.push(nextNode);
-              }
-            }
-
-            if (endIndex !== -1) {
-              // Create admonition node
-              const admonitionNode = {
-                type: 'admonition',
-                data: {
-                  type,
-                  title,
-                },
-                children: content,
-              };
-
-              // Replace old nodes with admonition
-              nodes.splice(i, endIndex - i + 1, admonitionNode);
-              return i;
-            }
+          const lines = node.children[0].value.split('\n');
+          for (const line of lines) {
+            newNodes.push({
+              type: 'paragraph',
+              children: [{ type: 'text', value: line }],
+            });
           }
+        } else {
+          newNodes.push(node);
         }
       }
 
-      return nodes.length;
+      return newNodes;
     };
 
-    // Process admonitions at root level
-    if (tree.children && tree.children.length) {
+    const transformAdmonitions = (nodes: any[]): any[] => {
+      const result: any[] = [];
       let i = 0;
-      while (i < tree.children.length) {
-        i = transformAdmonitions(tree.children, i, tree);
+
+      while (i < nodes.length) {
+        const node = nodes[i];
+        const text = node.children?.[0]?.value;
+
+        const match = text?.match(admonitionRegex);
+        if (node.type === 'paragraph' && match) {
+          const type = match[1];
+          const title = match[2] || '';
+          const content: any[] = [];
+
+          let j = i + 1;
+          while (j < nodes.length) {
+            const endText = nodes[j].children?.[0]?.value;
+            if (nodes[j].type === 'paragraph' && closingRegex.test(endText)) {
+              break;
+            }
+            content.push(nodes[j]);
+            j++;
+          }
+
+          // Push admonition node if closing ::: was found
+          if (j < nodes.length) {
+            result.push({
+              type: 'admonition',
+              data: { type, title },
+              children: content,
+            });
+            i = j + 1;
+            continue;
+          }
+        }
+
+        // Not an admonition — copy as-is
+        result.push(node);
         i++;
       }
-    }
+
+      return result;
+    };
+
+    // Step 1: Split paragraphs that contain multiple lines
+    const flat = splitInlineAdmonitions(tree.children);
+
+    // Step 2: Transform any admonitions
+    tree.children = transformAdmonitions(flat);
   }
 
   /**

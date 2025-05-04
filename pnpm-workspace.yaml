@@ -1,3 +1,8 @@
 packages:
-  - 'my-website'
-  - 'docusaurus-cms'
+  - my-website
+  - docusaurus-cms
+onlyBuiltDependencies:
+  - core-js
+  - core-js-pure
+  - electron
+  - esbuild
