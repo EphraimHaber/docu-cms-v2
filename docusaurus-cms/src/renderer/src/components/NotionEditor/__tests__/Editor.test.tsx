@@ -84,6 +84,9 @@ describe('NotionEditor Component - Real-time Document Rendering', () => {
     expect(parsedContent).toHaveProperty('type', 'doc');
     expect(parsedContent).toHaveProperty('content');
     // Check that heading was parsed correctly
+    if (!parsedContent.content) {
+      throw new Error('Parsed content does not contain any nodes');
+    }
     expect(parsedContent.content[0]).toHaveProperty('type', 'heading');
   });
 
