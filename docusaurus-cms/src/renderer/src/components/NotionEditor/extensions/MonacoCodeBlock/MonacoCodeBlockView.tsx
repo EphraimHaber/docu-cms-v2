@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, ChangeEvent, KeyboardEvent } from 'react';
+import React, { useEffect, useRef, useState, ChangeEvent, useCallback } from 'react';
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import * as monaco from 'monaco-editor';
 import './MonacoCodeBlockView.css';
@@ -49,9 +49,25 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
   const [editorMounted, setEditorMounted] = useState<boolean>(false);
   const isUpdatingRef = useRef<boolean>(false);
   const language = node.attrs.language || 'javascript';
-
-  // Store initial content in a ref to compare with later
   const initialContentRef = useRef<string>(node.textContent);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Function to insert a new paragraph node after the current node
+  const insertNodeAfter = useCallback(() => {
+    if (typeof getPos !== 'function') return;
+
+    const pos = getPos();
+    if (pos === undefined) return;
+
+    const endPos = pos + node.nodeSize;
+    const tr = editor.state.tr;
+    const newNode = editor.schema.nodes.paragraph.create();
+
+    tr.insert(endPos, newNode);
+    editor.view.dispatch(tr);
+
+    editor.commands.focus(endPos + 1);
+  }, [editor, getPos, node.nodeSize]);
 
   // Handle delete action
   const handleDelete = () => {
@@ -82,64 +98,127 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
         tabSize: 2,
       });
 
-      // Store initial content
       initialContentRef.current = node.textContent;
 
-      // Create a debounced update function
       const debouncedUpdate = debounce((value: string) => {
         if (!monacoInstance.current || isUpdatingRef.current) return;
 
         try {
-          // Set flag to prevent recursive updates
           isUpdatingRef.current = true;
 
-          // Create new content for the node that completely replaces the old content
-          // This helps ensure we don't accumulate text from previous edits
           const pos = getPos();
 
-          // Complete replacement of the code block with new content
           const tr = editor.state.tr;
 
-          // Get the original node to determine its type
           const originalNode = editor.state.doc.nodeAt(pos);
           if (!originalNode) {
             console.error('Could not find original node');
             return;
           }
 
-          // Create a new node with the updated content but same attributes
-          const newContent = [{ type: 'text', text: value }];
           const newNode = editor.schema.nodes[originalNode.type.name].create(
             { ...originalNode.attrs },
             editor.schema.nodeFromJSON({ type: 'text', text: value }),
             originalNode.marks,
           );
 
-          // Replace the entire node with the new one
           tr.replaceWith(pos, pos + originalNode.nodeSize, newNode);
           editor.view.dispatch(tr);
 
-          // Update the reference to compare for future changes
           initialContentRef.current = value;
         } catch (error) {
           console.error('Error updating code block:', error);
         } finally {
-          // Reset flag
           setTimeout(() => {
             isUpdatingRef.current = false;
           }, 0);
         }
       }, 300);
 
-      // Handle changes in Monaco editor
       monacoInstance.current.onDidChangeModelContent(() => {
         if (!monacoInstance.current) return;
 
         const value = monacoInstance.current.getValue();
 
-        // Only trigger update if content has actually changed from initial state
         if (value !== initialContentRef.current) {
           debouncedUpdate(value);
+        }
+      });
+
+      monacoInstance.current.onKeyDown((e) => {
+        if (!monacoInstance.current) return;
+
+        if (e.keyCode === monaco.KeyCode.DownArrow) {
+          const model = monacoInstance.current.getModel();
+          const position = monacoInstance.current.getPosition();
+
+          if (model && position) {
+            const lastLineNumber = model.getLineCount();
+            const lastLineMaxColumn = model.getLineMaxColumn(lastLineNumber);
+
+            if (position.lineNumber === lastLineNumber && position.column === lastLineMaxColumn) {
+              e.preventDefault();
+              e.stopPropagation();
+              insertNodeAfter();
+            }
+          }
+        }
+
+        if (e.keyCode === monaco.KeyCode.UpArrow) {
+          const model = monacoInstance.current.getModel();
+          const position = monacoInstance.current.getPosition();
+
+          if (model && position) {
+            if (position.lineNumber === 1 && position.column === 1) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (typeof getPos === 'function') {
+                const pos = getPos();
+                if (pos !== undefined) {
+                  editor.commands.focus(pos);
+                }
+              }
+            }
+          }
+        }
+
+        if (e.keyCode === monaco.KeyCode.LeftArrow) {
+          const model = monacoInstance.current.getModel();
+          const position = monacoInstance.current.getPosition();
+
+          if (model && position) {
+            if (position.lineNumber === 1 && position.column === 1) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (typeof getPos === 'function') {
+                const pos = getPos();
+                if (pos !== undefined) {
+                  editor.commands.focus(pos);
+                }
+              }
+            }
+          }
+        }
+
+        if (e.keyCode === monaco.KeyCode.RightArrow) {
+          const model = monacoInstance.current.getModel();
+          const position = monacoInstance.current.getPosition();
+
+          if (model && position) {
+            const lastLineNumber = model.getLineCount();
+            const lastLineMaxColumn = model.getLineMaxColumn(lastLineNumber);
+
+            if (position.lineNumber === lastLineNumber && position.column === lastLineMaxColumn) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (typeof getPos === 'function') {
+                const pos = getPos();
+                if (pos !== undefined) {
+                  editor.commands.focus(pos + node.nodeSize);
+                }
+              }
+            }
+          }
         }
       });
 
@@ -152,9 +231,8 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
         monacoInstance.current = null;
       }
     };
-  }, []);
+  }, [insertNodeAfter, getPos, editor, node.nodeSize]);
 
-  // Update Monaco language when language attribute changes
   useEffect(() => {
     if (monacoInstance.current && editorMounted) {
       const model = monacoInstance.current.getModel();
@@ -163,7 +241,6 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
     }
   }, [language, editorMounted]);
 
-  // Handle external content changes
   useEffect(() => {
     if (
       monacoInstance.current &&
@@ -172,7 +249,6 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
     ) {
       isUpdatingRef.current = true;
 
-      // Update the editor with external changes
       monacoInstance.current.setValue(node.textContent);
       initialContentRef.current = node.textContent;
 
@@ -182,12 +258,27 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
     }
   }, [node.textContent]);
 
-  // Handle language selection
   const onLanguageChange = (e: ChangeEvent<HTMLSelectElement>) => {
     updateAttributes({ language: e.target.value });
   };
 
-  // Common programming languages
+  const handleWrapperClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (
+      wrapperRef.current &&
+      event.target === wrapperRef.current &&
+      editorRef.current &&
+      typeof getPos === 'function'
+    ) {
+      const wrapperRect = wrapperRef.current.getBoundingClientRect();
+      const editorRect = editorRef.current.getBoundingClientRect();
+      const clickY = event.clientY;
+
+      if (clickY > editorRect.bottom && clickY <= wrapperRect.bottom) {
+        insertNodeAfter();
+      }
+    }
+  };
+
   const languages: ProgrammingLanguage[] = [
     'javascript',
     'typescript',
@@ -205,7 +296,11 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
   ];
 
   return (
-    <NodeViewWrapper className="monaco-code-block-wrapper">
+    <NodeViewWrapper
+      ref={wrapperRef}
+      className="monaco-code-block-wrapper"
+      onClick={handleWrapperClick}
+    >
       <div className="monaco-code-block">
         <div className="code-block-header" contentEditable={false}>
           <span className="language-label">Language:</span>
@@ -213,7 +308,7 @@ const MonacoCodeBlockView: React.FC<MonacoCodeBlockViewProps> = ({
             value={language}
             onChange={onLanguageChange}
             className="language-selector"
-            tabIndex={-1} // Remove from tab order
+            tabIndex={-1}
           >
             {languages.map((lang) => (
               <option key={lang} value={lang}>
