@@ -1,2 +1,2 @@
-## Docusauros CMS Editor - Alpha Version
+# Docusauros CMS Editor - Alpha Version
 
