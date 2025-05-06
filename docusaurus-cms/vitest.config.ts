@@ -11,7 +11,7 @@ export default defineConfig({
     alias: [
       { find: '@', replacement: resolve(__dirname, './src/renderer/src') },
       {
-        find: /^monaco-editor$/,
+        find: 'monaco-editor',
         replacement: resolve(__dirname, './node_modules/monaco-editor/esm/vs/editor/editor.api'),
       },
     ],
