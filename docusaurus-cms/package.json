@@ -1,12 +1,13 @@
 {
   "name": "docusaurus-cms",
-  "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "version": "0.1.0-alpha",
+  "description": "A modern desktop application for visually editing and managing Docusaurus documentation sites",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint --cache .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",

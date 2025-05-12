@@ -1,7 +1,7 @@
-import { Node, mergeAttributes, NodeConfig } from '@tiptap/core';
-import CodeBlock, { CodeBlockOptions } from '@tiptap/extension-code-block';
+import CodeBlock from '@tiptap/extension-code-block';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import MonacoCodeBlockView from './MonacoCodeBlockView';
+import { AdmonitionAttributes } from '../AdmonitionExtension';
 
 interface MonacoCodeBlockAttributes {
   language: string;
@@ -13,14 +13,12 @@ export interface MonacoCodeBlockOptions {
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
+    admonition: {
+      setAdmonition: (attributes: AdmonitionAttributes) => ReturnType;
+    };
+
     monacoCodeBlock: {
-      /**
-       * Set a monaco code block
-       */
       setMonacoCodeBlock: (attributes?: { language?: string }) => ReturnType;
-      /**
-       * Toggle a monaco code block
-       */
       toggleMonacoCodeBlock: (attributes?: { language?: string }) => ReturnType;
     };
   }
@@ -30,7 +28,7 @@ export const MonacoCodeBlock = CodeBlock.extend({
   codeBlock: true,
   name: 'codeBlock',
   group: 'block',
-  content: 'text*', // Contains text
+  content: 'text*',
   marks: '', // No marks allowed inside
   defining: true,
 

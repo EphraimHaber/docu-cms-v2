@@ -4,7 +4,7 @@
 
 A modern desktop application for visually editing and managing Docusaurus documentation sites with a Notion-like experience.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/EphraimHaber/docusaurus-cms)
+[![Version](https://img.shields.io/badge/version-0.1.0--alpha-blue.svg)](https://github.com/EphraimHaber/docusaurus-cms)
 
 ## 🌟 Features
 

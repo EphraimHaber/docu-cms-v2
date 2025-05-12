@@ -3,8 +3,8 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { AdmonitionComponent } from './AdmonitionComponent';
 
 // Define the structure for admonition attributes
-interface AdmonitionAttributes {
-  type: string;
+export interface AdmonitionAttributes {
+  type: 'note' | 'tip' | 'info' | 'warning' | 'danger';
   title: string;
 }
 

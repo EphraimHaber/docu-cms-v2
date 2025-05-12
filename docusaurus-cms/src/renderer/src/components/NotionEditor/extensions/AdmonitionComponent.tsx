@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/react';
 import './AdmonitionComponent.css';
 

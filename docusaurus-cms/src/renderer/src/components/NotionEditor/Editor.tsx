@@ -4,7 +4,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import GlobalDragHandle from 'tiptap-extension-global-drag-handle';
 import Highlight from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './Editor.css';
 import { MarkdownSerializer } from './MarkdownSerializer';
 import { MarkdownParser } from './MarkdownParser';

@@ -5,8 +5,8 @@ marked.setOptions({
   gfm: true, // GitHub Flavored Markdown
   breaks: true, // Convert \n to <br>
   pedantic: false,
-  headerIds: true,
-  mangle: false,
+  // headerIds: true,
+  // mangle: false,
 });
 
 /**
@@ -14,8 +14,12 @@ marked.setOptions({
  * @param markdown Markdown string to render
  * @returns HTML string
  */
-export function renderMarkdown(markdown: string): string {
-  return marked.parse(markdown);
+export function renderMarkdown(markdown: string) {
+  const parsedMarkdown = marked.parse(markdown);
+  if (typeof parsedMarkdown !== 'string') {
+    throw new Error('Parsed markdown is not a string');
+  }
+  return parsedMarkdown;
 }
 
 /**
@@ -39,6 +43,6 @@ export function sanitizeHtml(html: string): string {
  * @param markdown Markdown string to render
  * @returns Safe HTML string
  */
-export function renderMarkdownSafe(markdown: string): string {
+export function renderMarkdownSafe(markdown: string) {
   return sanitizeHtml(renderMarkdown(markdown));
 }
