@@ -9,35 +9,30 @@ on:
 jobs:
     build-and-test:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./docusaurus-cms
 
         steps:
             - uses: actions/checkout@v4
 
             - uses: pnpm/action-setup@v4
 
-            - name: Install pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: latest
-                  run_install: false
-
             - name: Install dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
 
             - name: Type check
+              working-directory: ./docusaurus-cms
               run: pnpm run typecheck
 
             - name: Format check
+              working-directory: ./docusaurus-cms
               run: pnpm run format:check
 
             # - name: Lint
             #   run: pnpm run lint
 
             - name: Run tests
+              working-directory: ./docusaurus-cms
               run: pnpm run test
 
             - name: Build
+              working-directory: ./docusaurus-cms
               run: pnpm run build
