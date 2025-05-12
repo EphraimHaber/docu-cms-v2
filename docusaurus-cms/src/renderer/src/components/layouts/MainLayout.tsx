@@ -21,10 +21,7 @@ import {
 import pathUtils from '../../utils/path';
 import CategoryEditor from '../CategoryEditor';
 import CategoryCreator from '../CategoryCreator';
-import matter from 'gray-matter';
-
-// Import icons from Tabler
-import { IconDots, IconEdit, IconPlus, IconFolder, IconTrash } from '@tabler/icons-react';
+import { IconDots, IconEdit, IconPlus, IconFolder } from '@tabler/icons-react';
 
 interface MainLayoutProps {
   sitePath: string;
@@ -79,47 +76,41 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
     loadStructure();
   }, [sitePath]);
 
-  // Sort documents within categories by sidebar_position or filename
-  const sortDocumentsInCategory = async (docs: string[]) => {
-    const sortedDocs = [...docs];
+  // const sortDocumentsInCategory = async (docs: string[]) => {
+  //   const sortedDocs = [...docs];
 
-    // Create a map to store document positions
-    const positionMap = new Map<string, number>();
+  //   const positionMap = new Map<string, number>();
 
-    // Read each document to get its sidebar_position
-    for (const doc of docs) {
-      try {
-        const docContent = await window.api.readFile(doc);
-        if (!docContent) {
-          console.error(`Failed to read document ${doc}`);
-          continue;
-        }
-        const { data } = matter(docContent);
+  //   for (const doc of docs) {
+  //     try {
+  //       const docContent = await window.api.readFile(doc);
+  //       if (!docContent) {
+  //         console.error(`Failed to read document ${doc}`);
+  //         continue;
+  //       }
+  //       const { data } = matter(docContent);
+  //       const position = data.sidebar_position || data.sidebarPosition || 999;
+  //       positionMap.set(doc, position);
+  //     } catch (error) {
+  //       console.error(`Error reading document ${doc}:`, error);
+  //       positionMap.set(doc, 999);
+  //     }
+  //   }
 
-        // Use sidebar_position if available, otherwise use a high number
-        const position = data.sidebar_position || data.sidebarPosition || 999;
-        positionMap.set(doc, position);
-      } catch (error) {
-        console.error(`Error reading document ${doc}:`, error);
-        positionMap.set(doc, 999); // Default to high number if error
-      }
-    }
+  //   sortedDocs.sort((a, b) => {
+  //     const posA = positionMap.get(a) || 999;
+  //     const posB = positionMap.get(b) || 999;
 
-    // Sort documents by position, then by filename if positions are equal
-    sortedDocs.sort((a, b) => {
-      const posA = positionMap.get(a) || 999;
-      const posB = positionMap.get(b) || 999;
+  //     if (posA !== posB) {
+  //       return posA - posB;
+  //     }
 
-      if (posA !== posB) {
-        return posA - posB;
-      }
+  //     // If positions are equal, sort by filename
+  //     return pathUtils.basename(a).localeCompare(pathUtils.basename(b));
+  //   });
 
-      // If positions are equal, sort by filename
-      return pathUtils.basename(a).localeCompare(pathUtils.basename(b));
-    });
-
-    return sortedDocs;
-  };
+  //   return sortedDocs;
+  // };
 
   // Filter files by search term
   const getFilteredFiles = (files: string[] = []) => {
@@ -129,13 +120,11 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
     );
   };
 
-  // Create a new document
   const createNewDocument = async (type: 'docs' | 'blog') => {
     const now = new Date();
     const dateString = now.toISOString().split('T')[0]; // YYYY-MM-DD
     const defaultTitle = type === 'docs' ? 'New Document' : 'New Blog Post';
 
-    // Generate a default filename
     let filename = '';
     if (type === 'docs') {
       filename = `new-document-${Date.now()}.md`;
@@ -152,11 +141,9 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
       );
 
       if (created) {
-        // Refresh the project structure
         const projectStructure = await window.api.getProjectStructure();
         setStructure(projectStructure);
 
-        // Navigate to the editor
         navigate(`/docs/${encodeURIComponent(filePath)}`);
       }
     } else if (type === 'blog') {
@@ -212,9 +199,7 @@ function MainLayout({ sitePath }: MainLayoutProps): React.JSX.Element {
     return structure.docs.filter((doc) => !categorizedDocs.includes(doc));
   };
 
-  // Create a new document in a specific category
   const createNewDocumentInCategory = async (categoryName: string) => {
-    const now = new Date();
     const timestamp = Date.now();
     const defaultTitle = 'New Document';
 

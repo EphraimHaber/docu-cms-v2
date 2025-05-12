@@ -11,7 +11,6 @@ import {
   Alert,
   Paper,
 } from '@mantine/core';
-import pathUtils from '../utils/path';
 import NotionEditor from './NotionEditor/Editor';
 import FrontMatterCard from './NotionEditor/FrontMatterCard';
 
@@ -29,7 +28,8 @@ interface DocsEditorProps {
   sitePath: string;
 }
 
-function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
+const DocsEditor: React.FC<DocsEditorProps> = ({ sitePath }) => {
+  console.log({ sitePath });
   const { filePath } = useParams<{ filePath: string }>();
   const navigate = useNavigate();
   const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
@@ -207,6 +207,6 @@ function DocsEditor({ sitePath }: DocsEditorProps): React.JSX.Element {
       </Box>
     </>
   );
-}
+};
 
 export default DocsEditor;

@@ -85,9 +85,6 @@ importers:
       unified:
         specifier: ^11.0.5
         version: 11.0.5
-      unist-util-visit:
-        specifier: ^5.0.0
-        version: 5.0.0
     devDependencies:
       '@electron-toolkit/eslint-config-prettier':
         specifier: ^3.0.0

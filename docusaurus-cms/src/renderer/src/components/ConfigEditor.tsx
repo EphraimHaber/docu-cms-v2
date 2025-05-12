@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button, Group, Text, Box, Alert, LoadingOverlay } from '@mantine/core';
 import { Editor } from '@monaco-editor/react';
 import pathUtils from '../utils/path';
@@ -9,8 +9,8 @@ interface ConfigEditorProps {
 }
 
 function ConfigEditor({ sitePath }: ConfigEditorProps): React.JSX.Element {
+  console.log({ sitePath });
   const { filePath } = useParams<{ filePath: string }>();
-  const navigate = useNavigate();
   const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
 
   const [content, setContent] = useState<string>('');

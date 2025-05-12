@@ -11,7 +11,6 @@ import {
   TagsInput,
   Paper,
 } from '@mantine/core';
-import pathUtils from '../utils/path';
 import NotionEditor from './NotionEditor/Editor';
 import FrontMatterCard from './NotionEditor/FrontMatterCard';
 
@@ -33,6 +32,7 @@ interface BlogEditorProps {
 function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
   const { filePath } = useParams<{ filePath: string }>();
   const navigate = useNavigate();
+  console.log({ sitePath });
   const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
 
   const [content, setContent] = useState<DocusaurusContent | null>(null);

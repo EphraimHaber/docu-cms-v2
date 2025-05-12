@@ -9,6 +9,7 @@ export const AdmonitionComponent: React.FC<NodeViewProps> = ({
   editor,
   getPos,
   deleteNode,
+  //@ts-ignore
   ...props
 }) => {
   const type = node.attrs.type || 'note';

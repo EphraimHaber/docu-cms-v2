@@ -7,7 +7,8 @@ export const CodeBlockFocusExtension = Extension.create({
     return {
       ArrowDown: ({ editor }) => {
         const { selection, doc } = editor.state;
-        const { from, to, empty } = selection;
+        // const { from, to, empty } = selection;
+        const { empty } = selection;
 
         if (!empty) {
           return false;

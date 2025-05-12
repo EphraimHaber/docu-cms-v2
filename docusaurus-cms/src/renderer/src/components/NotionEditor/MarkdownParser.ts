@@ -2,7 +2,6 @@ import { JSONContent } from '@tiptap/react';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
-import { visit } from 'unist-util-visit';
 
 export class MarkdownParser {
   /**
