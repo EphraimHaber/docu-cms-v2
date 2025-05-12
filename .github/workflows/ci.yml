@@ -33,6 +33,6 @@ jobs:
               working-directory: ./docusaurus-cms
               run: pnpm run test
 
-            # - name: Build
-            #   working-directory: ./docusaurus-cms
-            #   run: pnpm run build
+            - name: Build
+              working-directory: ./docusaurus-cms
+              run: pnpm run build
