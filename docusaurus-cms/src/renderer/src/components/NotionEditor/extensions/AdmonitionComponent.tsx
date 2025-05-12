@@ -9,11 +9,11 @@ export const AdmonitionComponent: React.FC<NodeViewProps> = ({
   editor,
   getPos,
   deleteNode,
-  //@ts-ignore
   ...props
 }) => {
   const type = node.attrs.type || 'note';
   const [title, setTitle] = useState(node.attrs.title || '');
+  console.log({ props });
 
   // Sync title with node attributes when they change externally
   useEffect(() => {

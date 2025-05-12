@@ -43,6 +43,6 @@ export function sanitizeHtml(html: string): string {
  * @param markdown Markdown string to render
  * @returns Safe HTML string
  */
-export function renderMarkdownSafe(markdown: string) {
+export function renderMarkdownSafe(markdown: string): string {
   return sanitizeHtml(renderMarkdown(markdown));
 }

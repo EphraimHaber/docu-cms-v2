@@ -47,7 +47,6 @@ export class MarkdownSerializer {
         return '> ' + this.serializeContent(node.content);
 
       case 'admonition':
-        console.log(node.attrs);
         const type = node.attrs?.type || 'note';
         const titleAdmonition = node.attrs?.title || '';
         const titleStr = titleAdmonition ? ` ${titleAdmonition}` : '';
