@@ -29,7 +29,6 @@ interface DocsEditorProps {
 }
 
 const DocsEditor: React.FC<DocsEditorProps> = ({ sitePath }) => {
-  console.log({ sitePath });
   const { filePath } = useParams<{ filePath: string }>();
   const navigate = useNavigate();
   const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
@@ -49,7 +48,6 @@ const DocsEditor: React.FC<DocsEditorProps> = ({ sitePath }) => {
 
       setLoading(true);
       try {
-        console.log(window.api.setCurrentFilePath);
         window.api.setCurrentFilePath(decodedFilePath);
         localStorage.setItem('currentFilePathdoo', decodedFilePath);
         const doc = await window.api.readFile(decodedFilePath);

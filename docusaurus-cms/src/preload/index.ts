@@ -35,7 +35,6 @@ const api = {
 
   // Set the current file path for image resolution
   setCurrentFilePath: (filePath: string) => {
-    console.log('lololllllll');
     // Store the current file path in a global variable
     localStorage.setItem('currentFilePath', filePath);
     (window as any).currentFilePath = filePath;
