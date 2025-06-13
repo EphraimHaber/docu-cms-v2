@@ -71,9 +71,7 @@ const MonacoCodeBlockView = forwardRef<MonacoCodeBlockViewRef, MonacoCodeBlockVi
 
     // Focus the Monaco editor when the node is selected
     useEffect(() => {
-      console.log('Selection state changed:', selected);
       if (selected && monacoInstance.current) {
-        console.log('Focusing Monaco editor');
         monacoInstance.current.focus();
       }
     }, [selected]);
