@@ -55,49 +55,15 @@ export const CodeBlockFocusExtension = Extension.create({
         const nextNode = doc.nodeAt(nextPos);
 
         if (nextNode && nextNode.type.name === 'codeBlock') {
-          console.log('Down arrow pressed with next node being a code block');
-
-          // Focus the Monaco editor after TipTap has done its default handling
-          setTimeout(() => {
-            try {
-              const nodeView = editor.view.nodeDOM(nextPos) as HTMLElement;
-
-              if (nodeView) {
-                // Find the Monaco editor container
-                const editorContainer = nodeView.querySelector('.monaco-editor-container');
-                if (editorContainer) {
-                  // Try to find the textarea that Monaco uses for input
-                  const monacoTextarea = nodeView.querySelector('.monaco-editor textarea');
-                  if (monacoTextarea) {
-                    (monacoTextarea as HTMLTextAreaElement).focus();
-                    console.log('Focused Monaco editor textarea directly');
-                  } else {
-                    // If textarea not found, try to click the editor container
-                    (editorContainer as HTMLElement).click();
-                    console.log('Clicked editor container');
-                  }
-                  return;
-                }
-              }
-
-              // Fallback method: Try to find Monaco editors by class
-              const monacoEditors = document.querySelectorAll('.monaco-editor');
-              for (let i = 0; i < monacoEditors.length; i++) {
-                const editor = monacoEditors[i];
-                const textarea = editor.querySelector('textarea');
-                if (textarea) {
-                  (textarea as HTMLTextAreaElement).focus();
-                  console.log('Focused Monaco editor textarea (fallback method)');
-                  return;
-                }
-              }
-
-              console.log('Could not find Monaco editor to focus');
-            } catch (e) {
-              console.error('Error focusing code block:', e);
-            }
-          }, 10);
-
+          console.log('Down arrow pressed, focusing next code block node');
+          // It's important to pass the correct position to focus.
+          // `nextPos` should be the starting position of the nextNode.
+          // The existing `const nextPos = $pos.after();` should provide this.
+          if (editor.commands.focus(nextPos)) {
+            // If focus command is successful, we've handled the event.
+            return true;
+          }
+          // If focus command fails for some reason, fall back to default behavior.
           return false;
         }
 
