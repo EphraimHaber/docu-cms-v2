@@ -39,6 +39,7 @@ declare global {
         frontmatter?: Record<string, any>,
       ) => Promise<boolean>;
       deleteFile: (filePath: string) => Promise<boolean>;
+      setCurrentFilePath: (filePath: string) => void;
     };
   }
 }

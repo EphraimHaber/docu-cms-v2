@@ -13,6 +13,7 @@ import SlashCommands from './SlashCommands';
 import { AdmonitionExtension } from './extensions/AdmonitionExtension';
 import { MonacoCodeBlock } from './extensions/MonacoCodeBlock/MonacoCodeBlockExtension';
 import { CodeBlockFocusExtension } from './extensions/CodeBlockFocusExtension';
+import { imageExtension } from './extensions/ImageExtension';
 
 interface NotionEditorProps {
   content: string;
@@ -64,6 +65,7 @@ const NotionEditor = ({ content, onChange, onSave }: NotionEditorProps): React.J
       MonacoCodeBlock,
       AdmonitionExtension,
       CodeBlockFocusExtension,
+      imageExtension,
     ],
     content: parsedContent,
     autofocus: 'end',

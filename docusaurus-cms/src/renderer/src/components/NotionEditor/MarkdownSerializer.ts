@@ -22,7 +22,7 @@ export class MarkdownSerializer {
         return this.serializeContent(node.content);
 
       case 'bulletList':
-        return this.serializeList(node.content, '*');
+        return this.serializeList(node.content, '-');
 
       case 'orderedList':
         return this.serializeList(node.content, '1.');
@@ -57,13 +57,60 @@ export class MarkdownSerializer {
     }
   }
 
-  static serializeList(items: JSONContent[] | undefined, marker: string): string {
+  static serializeList(
+    items: JSONContent[] | undefined,
+    marker: string,
+    indent: number = 0,
+    startNumber: number = 1,
+  ): string {
     if (!items) return '';
 
     return items
-      .map((item) => {
-        const content = this.serializeContent(item.content);
-        return `${marker} ${content}`;
+      .map((item, index) => {
+        if (!item.content) return '';
+
+        let result = '';
+        const indentation = ' '.repeat(indent);
+        let mainContent = '';
+        let nestedLists = '';
+
+        // Process the content of the list item
+        for (const node of item.content) {
+          if (node.type === 'bulletList' || node.type === 'orderedList') {
+            // Calculate nested indentation based on parent and current list type
+            let nestedIndent = indent;
+
+            if (node.type === 'bulletList' && marker === '1.') {
+              // If we're adding a bullet list under an ordered list item
+              nestedIndent = indent + 2;
+            } else if (node.type === 'orderedList' && marker === '-') {
+              // If we're adding an ordered list under a bullet list item
+              nestedIndent = indent + 2;
+            } else {
+              // For other nested lists, increment by 2
+              nestedIndent = indent + 2;
+            }
+
+            const nextMarker = node.type === 'bulletList' ? '-' : '1.';
+            nestedLists += '\n' + this.serializeList(node.content, nextMarker, nestedIndent, 1);
+          } else {
+            mainContent += this.serializeContent([node]);
+          }
+        }
+
+        // Determine the actual marker for this item
+        let actualMarker = marker;
+        if (marker === '1.') {
+          actualMarker = `${index + startNumber}.`;
+        }
+
+        // Construct the list item with proper indentation
+        result = `${indentation}${actualMarker} ${mainContent.trim()}`;
+        if (nestedLists) {
+          result += nestedLists;
+        }
+
+        return result;
       })
       .join('\n');
   }

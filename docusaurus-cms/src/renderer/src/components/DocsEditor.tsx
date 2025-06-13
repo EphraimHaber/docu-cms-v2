@@ -49,6 +49,9 @@ const DocsEditor: React.FC<DocsEditorProps> = ({ sitePath }) => {
 
       setLoading(true);
       try {
+        console.log(window.api.setCurrentFilePath);
+        window.api.setCurrentFilePath(decodedFilePath);
+        localStorage.setItem('currentFilePathdoo', decodedFilePath);
         const doc = await window.api.readFile(decodedFilePath);
         if (doc) {
           setContent(doc);

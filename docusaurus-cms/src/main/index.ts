@@ -14,6 +14,19 @@ import {
 // Store the Docusaurus site path
 let docusaurusSitePath: string | null = null;
 
+// Register the custom protocol for images
+app.whenReady().then(() => {
+  protocol.registerFileProtocol('docusaurus-img', (request, callback) => {
+    try {
+      const filePath = decodeURI(request.url.slice('docusaurus-img://'.length));
+      callback({ path: filePath });
+    } catch (error) {
+      console.error('Error handling docusaurus-img protocol:', error);
+      callback({ error: -2 /* net::FAILED */ });
+    }
+  });
+});
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -21,10 +34,13 @@ function createWindow(): void {
     height: 800,
     show: false,
     autoHideMenuBar: true,
+
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
+      devTools: true,
+      contextIsolation: false,
     },
   });
 
@@ -116,6 +132,25 @@ function setupIpcHandlers(mainWindow: BrowserWindow) {
     } catch (error) {
       console.error('Error deleting file:', error);
       return false;
+    }
+  });
+
+  // Handle image URL requests
+  ipcMain.handle('get-image-url', async (_, imagePath) => {
+    try {
+      // Register a protocol handler for local files
+      if (!protocol.isProtocolHandled('local-file')) {
+        protocol.registerFileProtocol('local-file', (request, callback) => {
+          const filePath = request.url.slice('local-file://'.length);
+          callback(decodeURI(filePath));
+        });
+      }
+
+      // Convert the file path to our custom protocol
+      return `local-file://${imagePath}`;
+    } catch (error) {
+      console.error('Error creating image URL:', error);
+      throw error;
     }
   });
 }
