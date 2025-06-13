@@ -9,7 +9,6 @@ interface ConfigEditorProps {
 }
 
 function ConfigEditor({ sitePath }: ConfigEditorProps): React.JSX.Element {
-  console.log({ sitePath });
   const { filePath } = useParams<{ filePath: string }>();
   const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
 

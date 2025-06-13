@@ -32,7 +32,6 @@ interface BlogEditorProps {
 function BlogEditor({ sitePath }: BlogEditorProps): React.JSX.Element {
   const { filePath } = useParams<{ filePath: string }>();
   const navigate = useNavigate();
-  console.log({ sitePath });
   const decodedFilePath = filePath ? decodeURIComponent(filePath) : '';
 
   const [content, setContent] = useState<DocusaurusContent | null>(null);
