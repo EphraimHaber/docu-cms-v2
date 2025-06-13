@@ -391,6 +391,7 @@ const MonacoCodeBlockView = forwardRef<MonacoCodeBlockViewRef, MonacoCodeBlockVi
         ref={wrapperRef}
         className="monaco-code-block-wrapper"
         onClick={handleWrapperClick}
+        tabIndex={0}
       >
         <div className="monaco-code-block">
           <div className="code-block-header" contentEditable={false}>
